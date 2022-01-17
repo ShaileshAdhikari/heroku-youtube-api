@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="
+    display: flex;
+    justify-content: space-around;
+">
+    <div style="max-width: 50%">
+        <h3>{{ status }}</h3>
+        <form action="/" method = "POST">
+            <p>Search Query:  <input type = "text" name = "video_url" /></p>
+            <p> | OR | </p>
+            <p>Video Link:  <input type = "text" name = "video_link" /></p>
+            <small style="color: red"> Should be like : https://youtu.be/5GY4X5DZgi8</small>
+            <p><input type = "submit" value = "Submit" /></p>
+        </form>
+
+        <div>
+            {% if response is string %}
+                <h2 style="color: red"> {{ response }}</h2>
+            {% else %}
+                {% for each in response %}
+                    <a href="/addToDatabase?videoId={{ each['vid'] }}&title={{ each['vt'] }}">
+                    <img src="{{ each['th'] }}">
+                    <p>{{ each['vt'] }} </p>
+                    </a>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <div style="max-width: 50%">
+        <h3> CURRENTLY PLAYING </h3>
+        {% if playing|length > 0 %}
+        <p>{{ playing[0][2] }}</p>
+        {% endif %}
+
+        <h3> LIST OF SONGS IN QUEUE</h3>
+        <ol>
+        {% for each in songl%}
+            <li>{{ each[4]}}</li>
+        {% endfor %}
+        </ol>
+    </div>
+</div>
+{% endblock %}

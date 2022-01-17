@@ -9,6 +9,8 @@ import re
 app = Flask(__name__)
 SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
+    uri = SQLALCHEMY_DATABASE_URI.replace("postgres://", "postgresql://", 1)
 
 try:
     # get_db_connection = psycopg2.connect(host=HOST, port=PORT, database=DATABASE,
@@ -97,7 +99,7 @@ def onPlayerEnd():
     result = get_table_playing(get_db_connection)
     to_return = [result[-1][1],result[-1][2]]
 
-    remove_entry(get_db_connection,'DELETE FROM initial_entry WHERE id=?', initial_result[0][0])
+    remove_entry(get_db_connection,'DELETE FROM initial_entry WHERE id=%s', initial_result[0][0])
 
     add_to_already_played(get_db_connection,to_return[0],to_return[1])
 

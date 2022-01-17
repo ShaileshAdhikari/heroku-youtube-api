@@ -81,7 +81,7 @@ def get_video_name(vid):
 def add_to_playing(get_db_connection,video_id,video_name):
     print("PARAMETER",video_id,video_name)
 
-    sql = """ INSERT INTO playing (video,video_name) VALUES (?,?)"""
+    sql = """ INSERT INTO playing (video,video_name) VALUES (%s,%s)"""
     db_update = update_data_entry(get_db_connection,sql, (video_id,video_name))
     print(db_update)
 
@@ -90,7 +90,7 @@ def add_to_playing(get_db_connection,video_id,video_name):
 def add_to_initial_entry(get_db_connection,v_id,title):
     print("PARAMETER",v_id,title)
 
-    sql = """ INSERT INTO initial_entry (video_id,video_name) VALUES (?,?)"""
+    sql = """ INSERT INTO initial_entry (video_id,video_name) VALUES (%s,%s)"""
     db_update = update_data_entry(get_db_connection,sql, (v_id,title))
     print(db_update)
 
@@ -99,7 +99,7 @@ def add_to_initial_entry(get_db_connection,v_id,title):
 def add_to_already_played(get_db_connection,v_id,v_name):
     print("PARAMETER",v_id,v_name)
 
-    sql = """ INSERT INTO already_played (video_id,video_name) VALUES (?,?)"""
+    sql = """ INSERT INTO already_played (video_id,video_name) VALUES (%s,%s)"""
     db_update = update_data_entry(get_db_connection,sql, (v_id,v_name))
     print(db_update)
 

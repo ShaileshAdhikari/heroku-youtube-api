@@ -82,7 +82,7 @@ def onPlayerEnd():
     result = get_table_playing()
     to_return = [result[-1][1],result[-1][2]]
 
-    remove_entry('DELETE FROM initial_entry WHERE id=?', initial_result[0][0])
+    remove_entry('DELETE FROM initial_entry WHERE id=%s', initial_result[0][0])
 
     add_to_already_played(to_return[0],to_return[1])
 

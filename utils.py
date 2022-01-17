@@ -19,21 +19,17 @@ reg1 = "(https:\/\/youtu.be\/)[A-Za-z0-9-_]{11}"
 reg2 = "(https:\/\/www.youtube.com\/watch\?v=)[A-Za-z0-9-_]{11}"
 reg3 = "(https:\/\/www.youtube.com\/watch\?v=)[A-Za-z0-9-_]{11}(&ab_channel=)[A-Za-z0-9-_]+"
 
-def get_db_connection():
-    conn = None
-    try:
-        conn = psycopg2.connect(host=HOST, port=PORT, database=DATABASE,
-                                user=USER, password=PASSWORD)
-        print("Successfully Connected to SQLite")
-    except Exception as e:
-        print("CONNECTION ERROR",e)
-
-    return conn
+try:
+    get_db_connection = psycopg2.connect(host=HOST, port=PORT, database=DATABASE,
+                                         user='jkddordfkdcbiu', password=PASSWORD)
+    print("Successfully Connected to Database !")
+except Exception as e:
+    print("CONNECTION ERROR",e)
 
 def update_data_entry(sql,task):
     result = False
     try:
-        connection = get_db_connection()
+        connection = get_db_connection
         cur = connection.cursor()
         cur.execute(sql,task)
         connection.commit()
@@ -48,9 +44,10 @@ def update_data_entry(sql,task):
 def get_table_initial_entry():
 
     sql=""" SELECT * FROM initial_entry ORDER BY updated_at ASC """
-    connection = get_db_connection()
+    connection = get_db_connection
     cur = connection.cursor()
-    result = cur.execute(sql).fetchall()
+    cur.execute(sql)
+    result = cur.fetchall()
     cur.close()
 
     return result
@@ -58,9 +55,10 @@ def get_table_initial_entry():
 def get_table_playing():
 
     sql=""" SELECT * FROM playing"""
-    connection = get_db_connection()
+    connection = get_db_connection
     cur = connection.cursor()
-    result = cur.execute(sql).fetchall()
+    cur.execute(sql)
+    result = cur.fetchall()
     cur.close()
 
     return result
@@ -100,7 +98,7 @@ def get_video_name(vid):
 def add_to_playing(video_id,video_name):
     print("PARAMETER",video_id,video_name)
 
-    sql = """ INSERT INTO playing (video,video_name) VALUES (?,?)"""
+    sql = """ INSERT INTO playing (video,video_name) VALUES (%s,%s)"""
     db_update = update_data_entry(sql, (video_id,video_name))
     print(db_update)
 
@@ -109,7 +107,7 @@ def add_to_playing(video_id,video_name):
 def add_to_initial_entry(v_id,title):
     print("PARAMETER",v_id,title)
 
-    sql = """ INSERT INTO initial_entry (video_id,video_name) VALUES (?,?)"""
+    sql = """ INSERT INTO initial_entry (video_id,video_name) VALUES (%s,%s)"""
     db_update = update_data_entry(sql, (v_id,title))
     print(db_update)
 
@@ -118,7 +116,7 @@ def add_to_initial_entry(v_id,title):
 def add_to_already_played(v_id,v_name):
     print("PARAMETER",v_id,v_name)
 
-    sql = """ INSERT INTO already_played (video_id,video_name) VALUES (?,?)"""
+    sql = """ INSERT INTO already_played (video_id,video_name) VALUES (%s,%s)"""
     db_update = update_data_entry(sql, (v_id,v_name))
     print(db_update)
 
@@ -127,7 +125,7 @@ def add_to_already_played(v_id,v_name):
 def remove_entry(sql,data):
     result = False
     try:
-        connection = get_db_connection()
+        connection = get_db_connection
         cur = connection.cursor()
         cur.execute(sql,(data,))
         connection.commit()
@@ -142,7 +140,7 @@ def remove_entry(sql,data):
 def truncate(sql):
     result = False
     try:
-        connection = get_db_connection()
+        connection = get_db_connection
         cur = connection.cursor()
         cur.execute(sql)
         connection.commit()

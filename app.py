@@ -4,9 +4,6 @@ import re
 
 app = Flask(__name__)
 
-
-
-
 @app.route("/youtube-frame-to-play")
 def youtube_frame(res='Successful'):
     return render_template("frame.html", remarks=res)

@@ -7,11 +7,7 @@ load_dotenv()
 
 database = 'database.db'
 
-CHANNEL_ID = os.getenv('CHANNEL_ID')
 API = os.getenv("API")
-SECRET_FILE = os.getenv("SECRET_FILE")
-PLAYLIST_ID = 'PL2DNgfJHykc_CqqELYsA4kve8w0fPyS6X'
-SCOPES = ['https://www.googleapis.com/auth/youtube.force-ssl']
 api_service_name = "youtube"
 api_version = "v3"
 

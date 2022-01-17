@@ -1,8 +1,23 @@
+import os
+
 from flask import Flask, render_template, request, redirect, url_for
 from utils import *
+from flask_sqlalchemy import SQLAlchemy
+
 import re
 
 app = Flask(__name__)
+SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+try:
+    # get_db_connection = psycopg2.connect(host=HOST, port=PORT, database=DATABASE,
+    #                                      user='jkddordfkdcbiu', password=PASSWORD)
+    db = SQLAlchemy(app)
+    get_db_connection = db.create_engine(SQLALCHEMY_DATABASE_URI,{})
+    print("Successfully Connected to Database !")
+except Exception as e:
+    print("CONNECTION ERROR",e)
 
 @app.route("/youtube-frame-to-play")
 def youtube_frame(res='Successful'):
@@ -13,8 +28,8 @@ res = 'Waiting to Add !'
 @app.route("/", methods=['POST', 'GET'])
 def search_add():
     global res
-    table_data = get_table_initial_entry()
-    playing = get_table_playing()
+    table_data = get_table_initial_entry(get_db_connection)
+    playing = get_table_playing(get_db_connection)
 
     if request.method == 'GET':
         return render_template("search.html", response='',
@@ -44,7 +59,7 @@ def get_url_from_user():
     title = request.args.get('title')
     print('ADDED',v_id,title)
 
-    db_update = add_to_initial_entry(v_id,title)
+    db_update = add_to_initial_entry(get_db_connection,v_id,title)
     print(db_update)
 
     return redirect(url_for('search_add'))
@@ -61,7 +76,7 @@ def onPlayerEnd():
     print("Here at Last Update")
 
     try:
-        truncate('DELETE FROM playing')
+        truncate(get_db_connection,'DELETE FROM playing')
     except Exception as e:
         print("Issue with Truncate !")
 
@@ -73,18 +88,18 @@ def onPlayerEnd():
     # if len(result) == 0:
     #     return render_template("frame.html", remarks='Not any video in playing table !')
 
-    initial_result = get_table_initial_entry()
+    initial_result = get_table_initial_entry(get_db_connection)
     if len(initial_result) == 0:
         return 'Not any video in initial table !'
 
-    add_to_playing(initial_result[0][1],initial_result[0][4])
+    add_to_playing(get_db_connection,initial_result[0][1],initial_result[0][4])
 
-    result = get_table_playing()
+    result = get_table_playing(get_db_connection)
     to_return = [result[-1][1],result[-1][2]]
 
-    remove_entry('DELETE FROM initial_entry WHERE id=%s', initial_result[0][0])
+    remove_entry(get_db_connection,'DELETE FROM initial_entry WHERE id=?', initial_result[0][0])
 
-    add_to_already_played(to_return[0],to_return[1])
+    add_to_already_played(get_db_connection,to_return[0],to_return[1])
 
     return to_return[0]
 

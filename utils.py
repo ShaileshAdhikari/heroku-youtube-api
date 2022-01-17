@@ -1,13 +1,17 @@
-import sqlite3
 import os
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
+import psycopg2
 
 load_dotenv()
 
-database = 'database.db'
-
 API = os.getenv("API")
+HOST = os.getenv("HOST")
+DATABASE = os.getenv("DATABASE")
+USER = os.getenv("USER")
+PORT = os.getenv("PORT")
+PASSWORD = os.getenv("PASSWORD")
+
 api_service_name = "youtube"
 api_version = "v3"
 
@@ -18,8 +22,8 @@ reg3 = "(https:\/\/www.youtube.com\/watch\?v=)[A-Za-z0-9-_]{11}(&ab_channel=)[A-
 def get_db_connection():
     conn = None
     try:
-        conn = sqlite3.connect(database)
-        conn.row_factory = sqlite3.Row
+        conn = psycopg2.connect(host=HOST, port=PORT, database=DATABASE,
+                                user=USER, password=PASSWORD)
         print("Successfully Connected to SQLite")
     except Exception as e:
         print("CONNECTION ERROR",e)

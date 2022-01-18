@@ -4,7 +4,7 @@ from googleapiclient.discovery import build
 
 load_dotenv()
 
-API = "AIzaSyDy9I-LcwCfcNRsuu5X7jOi_Yvqi0bNMlQ"
+API = os.getenv('API')
 
 api_service_name = "youtube"
 api_version = "v3"
@@ -134,3 +134,10 @@ def truncate(get_db_connection,sql):
         result = False
 
     return result
+
+def get_top3_from_already_played(get_db_connection):
+    sql = 'SELECT video_id, video_name AS `value_occurrence` ' \
+          'FROM already_played GROUP BY video_id ORDER BY `value_occurrence` ' \
+          'DESC LIMIT 3;'
+
+    return get_db_connection.execute(sql).fetchall()

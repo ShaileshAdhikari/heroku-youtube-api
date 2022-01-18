@@ -9,10 +9,8 @@ import re
 app = Flask(__name__)
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
-print(SQLALCHEMY_DATABASE_URI)
 if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
     SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace("postgres://", "postgresql://", 1)
-print(SQLALCHEMY_DATABASE_URI)
 
 try:
     # get_db_connection = psycopg2.connect(host=HOST, port=PORT, database=DATABASE,
@@ -94,6 +92,11 @@ def onPlayerEnd():
 
     initial_result = get_table_initial_entry(get_db_connection)
     if len(initial_result) == 0:
+        videos = get_top3_from_already_played(get_db_connection)
+        if len(videos) > 0:
+            for each in videos:
+                add_to_initial_entry(get_db_connection,each[0],each[1])
+
         return 'Not any video in initial table !'
 
     add_to_playing(get_db_connection,initial_result[0][1],initial_result[0][4])

@@ -4,7 +4,7 @@ from googleapiclient.discovery import build
 
 load_dotenv()
 
-API = os.getenv("API")
+API = "AIzaSyDy9I-LcwCfcNRsuu5X7jOi_Yvqi0bNMlQ"
 
 api_service_name = "youtube"
 api_version = "v3"

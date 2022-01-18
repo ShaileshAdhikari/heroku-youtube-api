@@ -136,8 +136,6 @@ def truncate(get_db_connection,sql):
     return result
 
 def get_top3_from_already_played(get_db_connection):
-    sql = 'SELECT video_id, video_name AS `value_occurrence` ' \
-          'FROM already_played GROUP BY video_id ORDER BY `value_occurrence` ' \
-          'DESC LIMIT 3;'
+    sql = 'SELECT video_id, video_name AS `value_occurrence` FROM already_played GROUP BY video_id ORDER BY `value_occurrence` DESC LIMIT 1;'
 
     return get_db_connection.execute(sql).fetchall()

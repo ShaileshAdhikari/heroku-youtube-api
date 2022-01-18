@@ -98,8 +98,8 @@ def onPlayerEnd():
             return 'TIME TO ADD VIDEOS ! !'
 
         print(videos)
-        to_play.append(videos[0])
-        to_play.append(videos[1])
+        to_play.append(videos[0][0])
+        to_play.append(videos[0][1])
     else:
         to_play.append(initial_result[0][1])
         to_play.append(initial_result[0][4])

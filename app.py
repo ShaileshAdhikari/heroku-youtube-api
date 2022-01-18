@@ -97,6 +97,7 @@ def onPlayerEnd():
         if len(videos) <= 0:
             return 'TIME TO ADD VIDEOS ! !'
 
+        print(videos)
         to_play.append(videos[0])
         to_play.append(videos[1])
     else:

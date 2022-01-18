@@ -38,16 +38,18 @@ def search_add():
                                status=res, songl=table_data,
                                playing = playing)
     if request.method == 'POST':
-        vid = request.form['video_url']
-        vurl = request.form['video_link']
+        searchQ = request.form['search']
+        vLink= request.form['vLink']
 
-        if len(vurl) < 10:
-            response = get_search_results(vid) if len(vid) > 3 \
-                else 'Query should have at least 3 words OR Valid video link  !'
+        if (len(searchQ) | len(vLink)) == 0:
+            response = "Please enter 'SEARCH STRING' of 'VIDEO URL' !"
+        elif len(vLink) == 0:
+            response = get_search_results(searchQ) if len(searchQ) > 3 else 'Query should have at least 3 words !'
+        elif len(searchQ) == 0:
+            vId = return_vid(vLink)
+            response = 'Invalid Video Link !' if vId == "INVALID URL" else get_video_name(vId)
         else:
-            VIDEO_ID = vurl.split('/')[-1]
-            response = get_video_name(VIDEO_ID) if (len(VIDEO_ID) > 10) & (len(VIDEO_ID) < 12) \
-                else 'Invalid video link ! '
+            response = "I don't know what happen !"
 
         res = 'Successfully Added Last One !'
         # return redirect(url_for('search_add',response = response))

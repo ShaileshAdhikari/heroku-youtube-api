@@ -1,4 +1,6 @@
 import os
+import re
+
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
 
@@ -12,6 +14,20 @@ api_version = "v3"
 reg1 = "(https:\/\/youtu.be\/)[A-Za-z0-9-_]{11}"
 reg2 = "(https:\/\/www.youtube.com\/watch\?v=)[A-Za-z0-9-_]{11}"
 reg3 = "(https:\/\/www.youtube.com\/watch\?v=)[A-Za-z0-9-_]{11}(&ab_channel=)[A-Za-z0-9-_]+"
+
+def return_vid(vURL):
+    p1 = re.compile(reg1)
+    p2 = re.compile(reg2)
+    p3 = re.compile(reg3)
+
+    if p1.match(vURL):
+        return p1.match(vURL)[0].split('/')[-1]
+    elif p2.match(vURL):
+        return p2.match(vURL)[0].split('=')[-1]
+    elif p3.match(vURL):
+        return p3.match(vURL)[0].split('=')[1]
+    else:
+        return "INVALID URL"
 
 def update_data_entry(get_db_connection,sql,task):
     result = False

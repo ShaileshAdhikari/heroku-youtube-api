@@ -90,16 +90,20 @@ def onPlayerEnd():
     # if len(result) == 0:
     #     return render_template("frame.html", remarks='Not any video in playing table !')
 
+    to_play = []
     initial_result = get_table_initial_entry(get_db_connection)
     if len(initial_result) == 0:
-        videos = get_top3_from_already_played(get_db_connection)
-        if len(videos) > 0:
-            for each in videos:
-                add_to_initial_entry(get_db_connection,each[0],each[1])
+        videos = get_from_already_played(get_db_connection)
+        if len(videos) <= 0:
+            return 'TIME TO ADD VIDEOS ! !'
 
-        return 'Not any video in initial table !'
+        to_play.append(videos[0])
+        to_play.append(videos[1])
+    else:
+        to_play.append(initial_result[0][1])
+        to_play.append(initial_result[0][4])
 
-    add_to_playing(get_db_connection,initial_result[0][1],initial_result[0][4])
+    add_to_playing(get_db_connection,to_play[0],to_play[0])
 
     result = get_table_playing(get_db_connection)
     to_return = [result[-1][1],result[-1][2]]

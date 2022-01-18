@@ -135,7 +135,7 @@ def truncate(get_db_connection,sql):
 
     return result
 
-def get_top3_from_already_played(get_db_connection):
+def get_from_already_played(get_db_connection):
     sql = 'SELECT video_id, video_name FROM already_played ORDER BY RANDOM() LIMIT 1;'
 
     return get_db_connection.execute(sql).fetchall()

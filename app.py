@@ -7,10 +7,12 @@ from flask_sqlalchemy import SQLAlchemy
 import re
 
 app = Flask(__name__)
-SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+print(SQLALCHEMY_DATABASE_URI)
 if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
-    uri = SQLALCHEMY_DATABASE_URI.replace("postgres://", "postgresql://", 1)
+    SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace("postgres://", "postgresql://", 1)
+print(SQLALCHEMY_DATABASE_URI)
 
 try:
     # get_db_connection = psycopg2.connect(host=HOST, port=PORT, database=DATABASE,

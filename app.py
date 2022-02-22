@@ -116,3 +116,17 @@ def onPlayerEnd():
 
     return to_return[0]
 
+# Delete duplicate entries from already_played table
+@app.route("/deleteDuplicate")
+def deletDuplicates():
+    print("Deleting Duplicates")
+    try:
+        connection = get_db_connection
+        sql = """ DELETE FROM already_played a USING already_played b
+                  WHERE a.id < b.id AND a.video_id = b.video_id AND a.video_name = b.video_name;"""
+        connection.execute(sql)
+        result = "SUCCESSFUL"
+    except Exception as e:
+        print("DELETE ERROR",e)
+        result = "DELETE ERROR"
+    return result

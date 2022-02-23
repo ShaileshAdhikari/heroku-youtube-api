@@ -107,6 +107,8 @@ def onPlayerEnd():
         result = get_table_playing(get_db_connection)
         to_return = [result[-1][1], result[-1][2]]
 
+        update_already_played(get_db_connection, to_play[0])
+
     else:
         to_play.extend((initial_result[0][1], initial_result[0][4]))
         remove_entry(get_db_connection, 'DELETE FROM initial_entry WHERE id=%s', initial_result[0][0])

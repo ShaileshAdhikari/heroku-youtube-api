@@ -121,6 +121,17 @@ def add_to_already_played(get_db_connection,v_id,v_name):
 
     return "OK"
 
+def update_already_played(get_db_connection,v_id):
+    print("PARAMETER",v_id)
+
+    sql = """ UPDATE already_played
+    SET completed_on = CURRENT_TIMESTAMP
+    WHERE video_id=(%s)"""
+    db_update = update_data_entry(get_db_connection,sql, (v_id,))
+    print(db_update)
+
+    return "OK"
+
 def remove_entry(get_db_connection,sql,data):
     result = False
     try:

@@ -3,13 +3,14 @@
 <div style="
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
 ">
-    <div style="max-width: 50%">
+    <div style="max-width: 400px;padding:15px 0 0 0 " >
         <h3>{{ status }}</h3>
         <form action="/" method = "POST">
-            <p>Search Query:  <input type = "text" name = "search" /></p>
+            <p>Search Query:  <input type = "text" name = "search" style="width: 100%"/></p>
             <p> | OR | </p>
-            <p>Video Link:  <input type = "text" name = "vLink" /></p>
+            <p>Video Link:  <input type = "text" name = "vLink" style="width: 100%"/></p>
             <small style="color: red"> Copy YouTube video link form anywhere! No restrictions ! </small>
             <p><input type = "submit" value = "Submit" /></p>
         </form>
@@ -20,14 +21,16 @@
             {% else %}
                 {% for each in response %}
                     <a href="/addToDatabase?videoId={{ each['vid'] }}&title={{ each['vt'] }}">
-                    <img src="{{ each['th'] }}">
-                    <p>{{ each['vt'] }} </p>
+                    <div style="display: flex; padding-top: 10px">
+                        <img src="{{ each['th'] }}" style="margin-right: 10px">
+                        <p>{{ each['vt'] }} </p>
+                    </div>
                     </a>
                 {% endfor %}
             {% endif %}
         </div>
     </div>
-    <div style="max-width: 50%">
+    <div style="max-width: 400px;padding:15px 0 0 0 ">
         <h3> CURRENTLY PLAYING </h3>
         {% if playing|length > 0 %}
         <p>{{ playing[0][2] }}</p>

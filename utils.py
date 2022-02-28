@@ -69,7 +69,8 @@ def get_search_results(query):
     request = get_api_connection().search().list(
         part="snippet",
         q=query,
-        maxResults=5,
+        maxResults=10,
+        type="video",
         fields="items(etag,id/videoId,snippet(title,thumbnails/default))"
     )
     response = request.execute()

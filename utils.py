@@ -166,7 +166,7 @@ def truncate(get_db_connection,sql):
 def get_from_already_played(get_db_connection):
     sql = """SELECT video_id, video_name ,completed_on
              FROM already_played 
-             WHERE completed_on < (CURRENT_TIMESTAMP - 30 * INTERVAL '1 MINUTE')
-             ORDER BY RANDOM() LIMIT 1;"""
+             WHERE completed_on < (CURRENT_TIMESTAMP - 90 * INTERVAL '1 MINUTE')
+             ORDER BY completed_on ASC LIMIT 15"""
 
     return get_db_connection.execute(sql).fetchall()

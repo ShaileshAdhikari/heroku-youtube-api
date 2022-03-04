@@ -1,9 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
+    <div style="display: flex;width: 50%">
+        <button id="volume-down" onclick="VolumeDown()">Volume Down</button>
+        <meter id="volume-meter" min="0" low="10" value="50" high="90" max="100"></meter>
+        <button id="volume-up" onclick="VolumeUp()">Volume Up</button>
+    </div>
+
     <h1 id="remarks-h1"> Remarks: {{ remarks }}</h1>
     <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
     <div id = 'existing-iframe'
          style="border: solid 4px #37474F">
     </div>
+    <style>
+        #volume-meter {
+          margin: 0 auto;
+          width: 500px;
+          height: 25px;
+          display: block;
+        }
+</style>
 {% endblock %}
 

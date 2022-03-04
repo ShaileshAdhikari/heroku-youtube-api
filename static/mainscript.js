@@ -26,7 +26,7 @@ function onYouTubeIframeAPIReady() {
 // 4. The API will call this function when the video player is ready.
 function onPlayerReady(event) {
     document.getElementById('existing-iframe').style.borderColor = '#FF6D00';
-    console.log('Player Started')
+    console.log('Player Started',player)
 }
 
 function stopVideo() {
@@ -78,4 +78,15 @@ function onPlayerStateChange(event) {
             }
         })
     }
+}
+
+// Volume Control
+function VolumeUp() {
+    player.setVolume(player.getVolume() + 5);
+    document.getElementById('volume-meter').value = player.getVolume();
+}
+
+function VolumeDown() {
+    player.setVolume(player.getVolume() - 5);
+    document.getElementById('volume-meter').value = player.getVolume();
 }

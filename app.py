@@ -1,4 +1,5 @@
 import os
+from json import loads
 
 from flask import Flask, render_template, request, redirect, url_for
 from utils import *
@@ -67,6 +68,17 @@ def get_url_from_user():
     print(db_update)
 
     return redirect(url_for('search_add'))
+
+@app.route("/add")
+def add_songs():
+    v_id = request.args.get('videoId')
+    title = request.args.get('title')
+    print('ADDED',v_id,title)
+
+    db_update = add_to_initial_entry(get_db_connection,v_id,title)
+    print(db_update)
+
+    return "True" if db_update else "False"
 
 
 @app.route("/firstUpdate", methods=['POST'])

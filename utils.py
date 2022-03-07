@@ -111,7 +111,7 @@ def add_to_initial_entry(get_db_connection,v_id,title):
     db_update = update_data_entry(get_db_connection,sql, (v_id,title))
     print(db_update)
 
-    return "OK"
+    return db_update
 
 def add_to_already_played(get_db_connection,v_id,v_name):
     print("PARAMETER",v_id,v_name)

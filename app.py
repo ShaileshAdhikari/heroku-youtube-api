@@ -4,10 +4,13 @@ from json import dumps
 from flask import Flask, render_template, request, redirect, url_for
 from utils import *
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 import re
 
 app = Flask(__name__)
+CORS(app)
+
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith("postgres://"):

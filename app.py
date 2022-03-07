@@ -5,8 +5,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from utils import *
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-
-import re
+from flask import Response
 
 app = Flask(__name__)
 CORS(app)
@@ -41,7 +40,9 @@ def playlist():
 def playing():
     if request.method == 'GET':
         result = table_playing(get_db_connection)
-        return dumps(result, default=str)
+        return Response(response = result,
+                        status = 200,
+                        mimetype = 'application/json')
 
 
 @app.route("/", methods=['POST', 'GET'])

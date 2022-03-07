@@ -2,6 +2,7 @@ import os
 import re
 
 from dotenv import load_dotenv
+from flask import jsonify
 from googleapiclient.discovery import build
 
 load_dotenv()
@@ -76,7 +77,7 @@ def get_search_results(query):
     )
     response = request.execute()
 
-    return [{
+    return  [{
             "vid":each['id']['videoId'],
             "vt":each['snippet']['title'],
             "th":each['snippet']['thumbnails']['default']['url'],
@@ -171,3 +172,6 @@ def get_from_already_played(get_db_connection):
              ORDER BY completed_on ASC LIMIT 15"""
 
     return get_db_connection.execute(sql).fetchall()
+
+def to_json(data):
+    return jsonify([dict(r) for r in data])

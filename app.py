@@ -1,11 +1,8 @@
-import os
-from json import dumps
 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from utils import *
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from flask import Response
 
 app = Flask(__name__)
 CORS(app)
@@ -34,16 +31,13 @@ def youtube_frame(res='Successful'):
 def playlist():
     if request.method == 'GET':
         result = get_table_initial_entry(get_db_connection)
-        return dumps(result, default=str)
+        return to_json(result)
 
 @app.route("/playing", methods=['GET'])
 def playing():
     if request.method == 'GET':
         result = table_playing(get_db_connection)
-        return Response(response = result,
-                        status = 200,
-                        mimetype = 'application/json')
-
+        return to_json(result)
 
 @app.route("/", methods=['POST', 'GET'])
 def search_add():

@@ -47,20 +47,21 @@ def update_data_entry(get_db_connection,sql,task):
 def get_table_initial_entry(get_db_connection):
 
     sql=""" SELECT * FROM initial_entry ORDER BY updated_at ASC """
-    connection = get_db_connection
+    return get_db_connection.execute(sql).fetchall()
 
-    result = connection.execute(sql).fetchall()
-
-    return result
+def initial_table_entry(get_db_connection):
+    sql=""" SELECT * FROM initial_entry ORDER BY updated_at ASC """
+    return get_db_connection.execute(sql).mappings().fetchall()
 
 def get_table_playing(get_db_connection):
 
     sql=""" SELECT * FROM playing"""
     connection = get_db_connection
-    result = connection.execute(sql).fetchall()
+    return connection.execute(sql).fetchall()
 
-
-    return result
+def table_playing(get_db_connection):
+    sql=""" SELECT * FROM playing"""
+    return get_db_connection.execute(sql).mappings().fetchall()
 
 def get_api_connection():
     return build(api_service_name, api_version, developerKey=API)

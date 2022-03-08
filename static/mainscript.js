@@ -29,17 +29,6 @@ function onPlayerReady(event) {
     console.log('Player Started',player)
 }
 
-function stopVideo() {
-    player.stopVideo();
-}
-
-function playVideo() {
-    player.playVideo();
-}
-
-function loadVideo(play) {
-    player.loadVideoById(play);
-}
 
 function changeBorderColor(playerStatus) {
     var color;

@@ -20,10 +20,11 @@
                 <h2 style="color: red"> {{ response }}</h2>
             {% else %}
                 {% for each in response %}
-                    <a href="/addToDatabase?videoId={{ each['vid'] }}&title={{ each['vt'] }}">
+                    <a href="#" onclick="postData( '{{ each['id'] }}','{{ each['name'] }}','{{ each['thumbnail'] }}','{{ each['duration'] }}' )">
+{#                    <a href="#" onclick="postData({{ each }})">#}
                     <div style="display: flex; padding-top: 10px">
-                        <img src="{{ each['th'] }}" style="margin-right: 10px">
-                        <p>{{ each['vt'] }} </p>
+                        <img src="{{ each['thumbnail'] }}" style="margin-right: 10px">
+                        <p>{{ each['name'] }} <br> {{ each['duration'] }}</p>
                     </div>
                     </a>
                 {% endfor %}
@@ -33,15 +34,33 @@
     <div style="max-width: 400px;padding:15px 0 0 0 ">
         <h3> CURRENTLY PLAYING </h3>
         {% if playing|length > 0 %}
-        <p>{{ playing[0][2] }}</p>
+        <p>{{ playing['name'] }}</p>
         {% endif %}
 
         <h3> LIST OF SONGS IN QUEUE</h3>
         <ol>
-        {% for each in songl%}
-            <li>{{ each[4]}}</li>
+        {% if songl.json|length > 0 %}
+        {% for each in songl.json %}
+            <li>{{ each['name']}}</li>
         {% endfor %}
+        {% endif %}
         </ol>
     </div>
 </div>
+    <script>
+    {# Call post request for /playlist with jquery #}
+    function postData(id,name,thumbnail,duration) {
+        $.ajax({
+            type: "POST",
+            url: "/playlist",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify({id,name,thumbnail,duration}),
+            success: function(data) {
+                console.log(data);
+                window.location.href = "/";
+            }
+        });
+    }
+    </script>
 {% endblock %}

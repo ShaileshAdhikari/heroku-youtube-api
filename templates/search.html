@@ -20,7 +20,7 @@
                 <h2 style="color: red"> {{ response }}</h2>
             {% else %}
                 {% for each in response %}
-                    <a href="#" onclick="postData( '{{ each['id'] }}','{{ each['name'] }}','{{ each['thumbnail'] }}','{{ each['duration'] }}' )">
+                    <a class="clickable" onclick="postData( '{{ each['id'] }}','{{ each['name'] }}','{{ each['thumbnail'] }}','{{ each['duration'] }}' )">
 {#                    <a href="#" onclick="postData({{ each }})">#}
                     <div style="display: flex; padding-top: 10px">
                         <img src="{{ each['thumbnail'] }}" style="margin-right: 10px">
@@ -34,7 +34,7 @@
     <div style="max-width: 400px;padding:15px 0 0 0 ">
         <h3> CURRENTLY PLAYING </h3>
         {% if playing|length > 0 %}
-        <p>{{ playing['name'] }}</p>
+        <p>{{ playing[0]['name'] }}</p>
         {% endif %}
 
         <h3> LIST OF SONGS IN QUEUE</h3>
@@ -56,11 +56,18 @@
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify({id,name,thumbnail,duration}),
-            success: function(data) {
-                console.log(data);
+            complete: function() {
+                console.log("COMPLETED");
                 window.location.href = "/";
             }
         });
     }
     </script>
+    <style>
+    .clickable {
+        cursor: pointer;
+        color: blue;
+        text-decoration: underline;
+    }
+    </style>
 {% endblock %}

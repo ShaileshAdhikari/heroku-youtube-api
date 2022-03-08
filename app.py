@@ -46,7 +46,7 @@ def playlist():
 def playing():
     if request.method == 'GET':
         result = table_playing(get_db_connection)
-        return to_json(result)
+        return dict(result)
 
 @app.route("/search",methods=['POST'])
 def search():
@@ -65,10 +65,10 @@ def link():
         return Response(json.dumps(result,default=str),
                         mimetype='application/json')
 
-@app.route("/getMostPlayed", methods=['GET'])
+@app.route("/most-played", methods=['GET'])
 def get_most_played():
     if request.method == 'GET':
-        result = get_most_played(get_db_connection)
+        result = most_played(get_db_connection)
         return to_json(result)
 
 @app.route("/end", methods=['GET'])

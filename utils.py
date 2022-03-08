@@ -111,7 +111,7 @@ def add_to_playing(get_db_connection, video_id, name,duration,thumbnail):
 
 
 # Already played table operations
-def get_most_played(get_db_connection):
+def most_played(get_db_connection):
     sql = """SELECT video_id as id, name ,duration, thumbnail, played AS count
              FROM already_played 
              ORDER BY count ASC LIMIT 5"""
@@ -169,10 +169,10 @@ def get_search_results(query):
                     item['duration'] = isodate.parse_duration(m['duration'])
 
         return [{
-            "vid": each['id']['videoId'],
-            "vt": each['snippet']['title'],
-            "vd": each['duration'],
-            "th": each['snippet']['thumbnails']['default']['url'],
+            "id": each['id']['videoId'],
+            "name": each['snippet']['title'],
+            "duration": each['duration'],
+            "thumbnail": each['snippet']['thumbnails']['default']['url'],
         } for each in response['items']]
     except Exception as e:
         return ("SEARCH ERROR", e)
@@ -187,10 +187,10 @@ def get_video_name(vid):
         response = request.execute()
 
         return [{
-            "vid": vid,
-            "vt": each['snippet']['title'],
-            "vd": isodate.parse_duration(each['contentDetails']['duration']),
-            "th": each['snippet']['thumbnails']['default']['url'],
+            "id": vid,
+            "name": each['snippet']['title'],
+            "duration": isodate.parse_duration(each['contentDetails']['duration']),
+            "thumbnail": each['snippet']['thumbnails']['default']['url'],
         } for each in response['items']]
     except Exception as e:
         return ("ERROR", e)

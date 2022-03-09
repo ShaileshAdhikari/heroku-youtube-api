@@ -89,7 +89,9 @@ def truncate(get_db_connection, sql):
 
 # Initial table operations
 def initial_table_getall(get_db_connection):
-    sql = """ SELECT video_id as id,name,thumbnail,duration,updated_at,updated_by
+    sql = """ SELECT video_id as id,name,thumbnail,duration,updated_at, (
+                SELECT username from users WHERE id = updated_by
+                )
               FROM initial_entry ORDER BY updated_at ASC """
     return get_db_connection.execute(sql).mappings().fetchall()
 
@@ -98,27 +100,38 @@ def initial_table_gettop(get_db_connection):
               FROM initial_entry ORDER BY updated_at ASC """
     return get_db_connection.execute(sql).mappings().first()
 
-def add_to_initial_entry(get_db_connection, v_id,
-                         v_title, v_time=0, v_thum='a'):
-    print("PARAMETER", v_id, v_title)
+def add_to_initial_entry(get_db_connection, v_id,v_title,
+                         v_time=0, v_thum='a',v_user='Anonymous'):
+    print("Add to initial table", v_id, v_title)
 
-    sql = """ INSERT INTO initial_entry (video_id,name,duration,thumbnail) VALUES (%s,%s,%s,%s)"""
-    db_update = update_data_entry(get_db_connection, sql, (v_id, v_title,v_time,v_thum))
+    check_sql = """ SELECT id,token,username FROM users WHERE token = %s """
+    check_result = get_db_connection.execute(check_sql, (v_user,)).mappings().first()
+    user = dict(check_result)['id'] if check_result is not None else 0
+
+    sql = """ INSERT INTO initial_entry (video_id,name,duration,thumbnail,updated_by) 
+              VALUES (%s,%s,%s,%s,%s)"""
+    db_update = update_data_entry(get_db_connection,
+                                  sql,
+                                  (v_id, v_title,v_time,v_thum,user))
     print(db_update)
 
     return db_update
 
 # Playing table operations
 def table_playing(get_db_connection):
-    sql = """ SELECT video_id as id,name,thumbnail,duration
+    sql = """ SELECT video_id as id,name,thumbnail,duration,updated_by,(
+                SELECT username from users WHERE id = updated_by
+                )
               FROM playing"""
     return get_db_connection.execute(sql).mappings().first()
 
-def add_to_playing(get_db_connection, video_id, name,duration,thumbnail):
-    print("PARAMETER", video_id, name,duration,thumbnail)
+def add_to_playing(get_db_connection, video_id, name,duration,thumbnail,user):
+    print("Add to playing", video_id, name,duration,thumbnail,user)
 
-    sql = """ INSERT INTO playing (video_id,name,duration,thumbnail) VALUES (%s,%s,%s,%s)"""
-    db_update = update_data_entry(get_db_connection, sql, (video_id, name,duration,thumbnail))
+    sql = """ INSERT INTO playing (video_id,name,duration,thumbnail,updated_by)
+              VALUES (%s,%s,%s,%s,%s)"""
+    db_update = update_data_entry(get_db_connection, sql,
+                                  (video_id, name,duration,thumbnail,user))
     print(db_update)
 
     return "OK"
@@ -133,23 +146,23 @@ def most_played(get_db_connection):
     return get_db_connection.execute(sql).fetchall()
 
 def get_from_already_played(get_db_connection):
-    sql = """SELECT video_id as id, name ,updated_at, thumbnail, duration
+    sql = """SELECT video_id as id, name ,updated_at, thumbnail, duration, updated_by
              FROM already_played 
              WHERE updated_at < (CURRENT_TIMESTAMP - 90 * INTERVAL '1 MINUTE')
              ORDER BY updated_at ASC LIMIT 15"""
 
     return get_db_connection.execute(sql).mappings().first()
 
-def add_to_already_played(get_db_connection, video_id, name,duration,thumbnail):
-    print("PARAMETER", video_id, name,duration,thumbnail)
+def add_to_already_played(get_db_connection, video_id, name,duration,thumbnail,user):
+    print("add to already played", video_id, name,duration,thumbnail,user)
 
     check_sql = """ SELECT video_id FROM already_played WHERE video_id = %s """
     check_result = get_db_connection.execute(check_sql, (video_id,)).mappings().first()
 
     if check_result is None:
-        sql = """ INSERT INTO already_played (video_id,name,duration,thumbnail) 
-                  VALUES (%s,%s,%s,%s)"""
-        db_update = update_data_entry(get_db_connection, sql, (video_id, name,duration,thumbnail))
+        sql = """ INSERT INTO already_played (video_id,name,duration,thumbnail,updated_by) 
+                  VALUES (%s,%s,%s,%s,%s)"""
+        db_update = update_data_entry(get_db_connection, sql, (video_id, name,duration,thumbnail,user))
         print(db_update)
         print("New Entry Updated")
     else:

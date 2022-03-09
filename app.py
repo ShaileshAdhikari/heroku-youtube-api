@@ -37,8 +37,10 @@ def playlist():
         vName = data['name']
         vThumb = data['thumbnail']
         vDuration = data['duration']
+        byUser = data['token']
 
-        result = add_to_initial_entry(get_db_connection, vId, vName, vDuration, vThumb)
+        result = add_to_initial_entry(get_db_connection, vId, vName,
+                                      vDuration, vThumb, byUser)
 
         return Response(result)
 
@@ -89,7 +91,7 @@ def on_player_end():
 
         videos = dict(videos)
         add_to_playing(get_db_connection, videos['id'], videos['name'],
-                       videos['duration'],videos['thumbnail'])
+                       videos['duration'],videos['thumbnail'],videos['updated_by'])
 
         # result = dict(table_playing(get_db_connection))
         #
@@ -100,12 +102,12 @@ def on_player_end():
         remove_entry(get_db_connection, 'DELETE FROM initial_entry WHERE video_id=%s', initial_result['id'])
 
         add_to_playing(get_db_connection,initial_result['id'], initial_result['name'],
-                       initial_result['duration'],initial_result['thumbnail'])
+                       initial_result['duration'],initial_result['thumbnail'],initial_result['username'])
 
     result = dict(table_playing(get_db_connection))
 
     add_to_already_played(get_db_connection,result['id'], result['name'],
-                          result['duration'],result['thumbnail'])
+                          result['duration'],result['thumbnail'],result['updated_by'])
 
     return result['id']
 # _____________________________________________________________

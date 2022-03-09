@@ -115,7 +115,7 @@ def user():
     if request.method == 'POST':
         data = request.get_json()
         token = data['token']
-        return get_user_details(token)
+        return get_user_details(get_db_connection,token)
 
 @app.route("/remove", methods=['DELETE'])
 def remove():

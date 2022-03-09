@@ -102,7 +102,7 @@ def on_player_end():
         remove_entry(get_db_connection, 'DELETE FROM initial_entry WHERE video_id=%s', initial_result['id'])
 
         add_to_playing(get_db_connection,initial_result['id'], initial_result['name'],
-                       initial_result['duration'],initial_result['thumbnail'],initial_result['username'])
+                       initial_result['duration'],initial_result['thumbnail'],initial_result['updated_by'])
 
     result = dict(table_playing(get_db_connection))
 

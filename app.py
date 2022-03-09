@@ -110,9 +110,12 @@ def on_player_end():
     return result['id']
 # _____________________________________________________________
 
-@app.route("/user", methods=['GET'])
+@app.route("/user", methods=['POST'])
 def user():
-    pass
+    if request.method == 'POST':
+        data = request.get_json()
+        token = data['token']
+        return get_user_details(token)
 
 @app.route("/remove", methods=['DELETE'])
 def remove():

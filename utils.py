@@ -19,6 +19,20 @@ reg3 = "(https:\/\/www.youtube.com\/watch\?v=)[A-Za-z0-9-_]{11}(&ab_channel=)[A-
 def to_json(data):
     return jsonify([dict(r) for r in data])
 
+name_list = []
+
+def get_a_name():
+  import pickle
+  import secrets
+  global name_list
+
+  if len(name_list) == 0:
+    print("Reading the File")
+    with open('static/name_list.pkl','rb') as f:
+      name_list = pickle.load(f)
+
+  return secrets.choice(name_list)
+
 # Checking url with regex and return video_id
 def return_vid(vURL):
     p1 = re.compile(reg1)
@@ -146,22 +160,7 @@ def add_to_already_played(get_db_connection, video_id, name,duration,thumbnail):
         print(db_update)
         print("Older Entry Updated")
 
-    # sql = """ INSERT INTO already_played (video_id,name,duration,thumbnail) VALUES (%s,%s,%s,%s)"""
-    # db_update = update_data_entry(get_db_connection, sql, (video_id, name,duration,thumbnail))
-    # print(db_update)
-
     return "OK"
-
-# def update_already_played(get_db_connection, v_id):
-#     print("PARAMETER", v_id)
-#
-#     sql = """ UPDATE already_played
-#     SET updated_at = CURRENT_TIMESTAMP, played = played + 1
-#     WHERE video_id=(%s)"""
-#     db_update = update_data_entry(get_db_connection, sql, (v_id,))
-#     print(db_update)
-#
-#     return "OK"
 
 # Youtube Api Operations
 def get_api_connection():
@@ -223,6 +222,30 @@ def get_video_duration(vid):
     return [{"id": each['id'],
              "duration": each['contentDetails']['duration']
              } for each in response['items']]
+
+# Geting user information if present
+def get_user_details(get_db_connection,user_token):
+
+    import hashlib
+    import time
+
+    check_sql = """ SELECT token FROM users WHERE token = %s """
+    check_result = get_db_connection.execute(check_sql, (user_token,)).mappings().first()
+
+    if check_result is None:
+        username = get_a_name()
+        tk = username+ str(time.time())
+        token = hashlib.sha256(tk.encode('utf-8')).hexdigest()
+
+        sql = """ INSERT INTO users (token,username,status) 
+                  VALUES (%s,%s,%s)"""
+        db_update = update_data_entry(get_db_connection, sql, (token, username,1))
+        print(db_update)
+        print("New Entry Updated")
+
+        return dict(get_db_connection.execute(check_sql, (token,)).mappings().first())
+    else:
+        return dict(check_result)
 
 # _____________________________________________________
 

@@ -42,8 +42,7 @@
         <ol>
         {% if songl.json|length > 0 %}
         {% for each in songl.json %}
-            <li>{{ each['name']}}</li>
-            <li>{{ each['username']}}</li>
+            <li>{{ each['name']}}<br>{{ each['username']}}</li>
         {% endfor %}
         {% endif %}
         </ol>

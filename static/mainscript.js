@@ -56,7 +56,7 @@ function onPlayerStateChange(event) {
     changeBorderColor(event.data);
     if (event.data == YT.PlayerState.ENDED) {
         console.log("PLAYER ENDED")
-        $.post("/end", function (res, status){
+        $.get("/end", function (res, status){
             console.log(res)
             if (res.length > 15){
                 $( "h1#remarks-h1" ).html( "Remarks: " + res );

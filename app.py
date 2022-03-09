@@ -106,10 +106,15 @@ def on_player_end():
                               result['duration'],result['thumbnail'])
 
     return result['id']
+# _____________________________________________________________
 
-@app.route("/remove", methods=[ 'GET'])
+@app.route("/user", methods=['GET'])
+def user():
+    pass
+
+@app.route("/remove", methods=['DELETE'])
 def remove():
-    if request.method == 'GET':
+    if request.method == 'DELETE':
         id = request.args.get('id')
         return remove_entry(
             get_db_connection,

@@ -229,7 +229,7 @@ def get_user_details(get_db_connection,user_token):
     import hashlib
     import time
 
-    check_sql = """ SELECT token FROM users WHERE token = %s """
+    check_sql = """ SELECT token,username FROM users WHERE token = %s """
     check_result = get_db_connection.execute(check_sql, (user_token,)).mappings().first()
 
     if check_result is None:

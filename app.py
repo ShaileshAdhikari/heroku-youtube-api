@@ -46,6 +46,8 @@ def playlist():
 def playing():
     if request.method == 'GET':
         result = table_playing(get_db_connection)
+        # get mac address of the device
+        print(request.remote_addr)
         return dict(result)
 
 @app.route("/search",methods=['GET'])
@@ -89,9 +91,9 @@ def on_player_end():
         add_to_playing(get_db_connection, videos['id'], videos['name'],
                        videos['duration'],videos['thumbnail'])
 
-        result = dict(table_playing(get_db_connection))
-
-        update_already_played(get_db_connection, result['id'])
+        # result = dict(table_playing(get_db_connection))
+        #
+        # update_already_played(get_db_connection, result['id'])
 
     else:
         initial_result = dict(initial_result)
@@ -100,10 +102,10 @@ def on_player_end():
         add_to_playing(get_db_connection,initial_result['id'], initial_result['name'],
                        initial_result['duration'],initial_result['thumbnail'])
 
-        result = dict(table_playing(get_db_connection))
+    result = dict(table_playing(get_db_connection))
 
-        add_to_already_played(get_db_connection,result['id'], result['name'],
-                              result['duration'],result['thumbnail'])
+    add_to_already_played(get_db_connection,result['id'], result['name'],
+                          result['duration'],result['thumbnail'])
 
     return result['id']
 # _____________________________________________________________

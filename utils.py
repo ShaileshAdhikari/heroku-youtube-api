@@ -129,22 +129,39 @@ def get_from_already_played(get_db_connection):
 def add_to_already_played(get_db_connection, video_id, name,duration,thumbnail):
     print("PARAMETER", video_id, name,duration,thumbnail)
 
-    sql = """ INSERT INTO already_played (video_id,name,duration,thumbnail) VALUES (%s,%s,%s,%s)"""
-    db_update = update_data_entry(get_db_connection, sql, (video_id, name,duration,thumbnail))
-    print(db_update)
+    check_sql = """ SELECT video_id FROM already_played WHERE video_id = %s """
+    check_result = get_db_connection.execute(check_sql, (video_id,)).mappings().first()
+
+    if check_result is None:
+        sql = """ INSERT INTO already_played (video_id,name,duration,thumbnail) 
+                  VALUES (%s,%s,%s,%s)"""
+        db_update = update_data_entry(get_db_connection, sql, (video_id, name,duration,thumbnail))
+        print(db_update)
+        print("New Entry Updated")
+    else:
+        sql = """ UPDATE already_played 
+                  SET updated_at = CURRENT_TIMESTAMP, played = played + 1
+                  WHERE video_id = %s """
+        db_update = update_data_entry(get_db_connection, sql, (video_id,))
+        print(db_update)
+        print("Older Entry Updated")
+
+    # sql = """ INSERT INTO already_played (video_id,name,duration,thumbnail) VALUES (%s,%s,%s,%s)"""
+    # db_update = update_data_entry(get_db_connection, sql, (video_id, name,duration,thumbnail))
+    # print(db_update)
 
     return "OK"
 
-def update_already_played(get_db_connection, v_id):
-    print("PARAMETER", v_id)
-
-    sql = """ UPDATE already_played
-    SET updated_at = CURRENT_TIMESTAMP, played = played + 1
-    WHERE video_id=(%s)"""
-    db_update = update_data_entry(get_db_connection, sql, (v_id,))
-    print(db_update)
-
-    return "OK"
+# def update_already_played(get_db_connection, v_id):
+#     print("PARAMETER", v_id)
+#
+#     sql = """ UPDATE already_played
+#     SET updated_at = CURRENT_TIMESTAMP, played = played + 1
+#     WHERE video_id=(%s)"""
+#     db_update = update_data_entry(get_db_connection, sql, (v_id,))
+#     print(db_update)
+#
+#     return "OK"
 
 # Youtube Api Operations
 def get_api_connection():

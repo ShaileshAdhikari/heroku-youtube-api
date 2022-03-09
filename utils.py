@@ -139,7 +139,7 @@ def update_already_played(get_db_connection, v_id):
     print("PARAMETER", v_id)
 
     sql = """ UPDATE already_played
-    SET completed_on = CURRENT_TIMESTAMP, played = played + 1
+    SET updated_at = CURRENT_TIMESTAMP, played = played + 1
     WHERE video_id=(%s)"""
     db_update = update_data_entry(get_db_connection, sql, (v_id,))
     print(db_update)

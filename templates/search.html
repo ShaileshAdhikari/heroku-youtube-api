@@ -56,7 +56,7 @@
             url: "/playlist",
             dataType: "json",
             contentType: "application/json",
-            data: JSON.stringify({id,name,thumbnail,duration}),
+            data: JSON.stringify({id,name,thumbnail,duration,token:"Anonymous"}),
             complete: function() {
                 console.log("COMPLETED");
                 window.location.href = "/";

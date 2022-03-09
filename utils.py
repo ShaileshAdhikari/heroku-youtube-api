@@ -139,9 +139,11 @@ def add_to_playing(get_db_connection, video_id, name,duration,thumbnail,user):
 
 # Already played table operations
 def most_played(get_db_connection):
-    sql = """SELECT video_id as id, name ,duration, thumbnail, played AS count
+    sql = """SELECT video_id as id, name ,duration, thumbnail, played AS count,updated_by,(
+                SELECT username from users WHERE id = updated_by
+                )
              FROM already_played 
-             ORDER BY count ASC LIMIT 5"""
+             ORDER BY count DESC LIMIT 5"""
 
     return get_db_connection.execute(sql).fetchall()
 

@@ -110,7 +110,6 @@ def on_player_end():
                           result['duration'],result['thumbnail'],result['updated_by'])
 
     return result['id']
-# _____________________________________________________________
 
 @app.route("/user", methods=['POST'])
 def user():
@@ -118,6 +117,15 @@ def user():
         data = request.get_json()
         token = data['token']
         return get_user_details(get_db_connection,token)
+# _____________________________________________________________
+
+@app.route("/user/change", methods=['POST'])
+def change_username():
+    if request.method == 'POST':
+        data = request.get_json()
+        token = data['token']
+        new_name = data['name']
+        return change_user_name(get_db_connection,token,new_name)
 
 @app.route("/remove", methods=['DELETE'])
 def remove():

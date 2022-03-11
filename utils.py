@@ -52,7 +52,7 @@ def return_vid(vURL):
 def update_data_entry(get_db_connection, sql, task):
     try:
         connection = get_db_connection
-        connection.execute(sql, task)
+        something = connection.execute(sql, task)
         result = {'status':True,
                   'message': 'Successfully updated'}
     except Exception as e:
@@ -238,7 +238,7 @@ def get_video_duration(vid):
              "duration": each['contentDetails']['duration']
              } for each in response['items']]
 
-# Geting user information if present
+# Getting user information if present
 def get_user_details(get_db_connection,user_token):
 
     import hashlib
@@ -262,6 +262,14 @@ def get_user_details(get_db_connection,user_token):
     else:
         return dict(check_result)
 
+def change_user_name(get_db_connection,user_token,new_name):
+    sql = """ UPDATE users 
+              SET username = %s
+              WHERE token = %s """
+    db_update = update_data_entry(get_db_connection, sql, (new_name,user_token))
+    print(db_update)
+    print("Older Entry Updated")
+    return db_update
 # _____________________________________________________
 
 

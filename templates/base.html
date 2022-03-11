@@ -12,11 +12,13 @@
     </div>
     {% block content %} {% endblock %}
 
-<script src =" {{ url_for('static', filename='cookie.js') }}">
-    window.onload = function() {
-        document.getElementById("username").innerHTML = checkCookie();
-    }
+<script>
+window.onload = function() {
+    console.log("Working on Cookies");
+    document.getElementById("username").innerHTML = checkCookie();
+}
 </script>
+<script src =" {{ url_for('static', filename='cookie.js') }}"></script>
 <script src=" {{ url_for('static', filename='mainscript.js') }}"></script>
 
 </body>

@@ -5,6 +5,9 @@
     justify-content: space-around;
     flex-wrap: wrap;
 ">
+    <div>
+        <p id="username"></p>
+    </div>
     <div style="max-width: 400px;padding:15px 0 0 0 " >
         <h3>{{ status }}</h3>
         <form action="/" method = "POST">
@@ -48,6 +51,10 @@
     </div>
 </div>
     <script>
+    window.onload = function() {
+        checkCookie();
+    }
+
     {# Call post request for /playlist with jquery #}
     function postData(id,name,thumbnail,duration) {
         $.ajax({
@@ -55,12 +62,69 @@
             url: "/playlist",
             dataType: "json",
             contentType: "application/json",
-            data: JSON.stringify({id,name,thumbnail,duration,token:"Anonymous"}),
+            data: JSON.stringify({
+                id,name,thumbnail,duration,
+                token:getCookie("CookieMonster")
+            }),
             complete: function() {
                 console.log("COMPLETED");
                 window.location.href = "/";
             }
         });
+    }
+
+    {#  Set Cookies with /user #}
+    function setCookie(cname, cvalue, exdays=365) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires="+ d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    {#  Get Cookies with /user #}
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "NewUser";
+    }
+
+    {#  Check if cookie is set #}
+    function checkCookie() {
+        var user = getCookie("CookieMonster");
+        console.log("Very First",user);
+        $.ajax(
+            {
+                type: "POST",
+                url: "/user",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    token:user
+                }),
+                complete: function (data) {
+                    {#console.log("COMPLETED",data.responseJSON);#}
+                    if (user !== "NewUser") {
+                        document.getElementById("username").innerHTML = "Hello Again, " + data.responseJSON.username;
+                        console.log("Hello Again, " + data.responseJSON.username);
+                    } else {
+                        setCookie("CookieMonster", data.responseJSON.token)
+                        document.getElementById("username").innerHTML = "Hello, " + data.responseJSON.username;
+                        console.log("Hello, " + data.responseJSON.username);
+                    }
+                    {#window.location.href = "/";#}
+                }
+            }
+        );
     }
     </script>
     <style>

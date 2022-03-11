@@ -25,32 +25,27 @@ function getCookie(cname) {
 }
 
     // {#  Check if cookie is set #}
-function checkCookie() {
-        var user = getCookie("CookieMonster");
-        console.log("Very First",user);
-        var nameToReturn =''
-        $.ajax(
-            {
-                type: "POST",
-                url: "/user",
-                dataType: "json",
-                contentType: "application/json",
-                data: JSON.stringify({
-                    token:user
-                }),
-                complete: function (data) {
-                    // {#console.log("COMPLETED",data.responseJSON);#}
-                    if (user !== "NewUser") {
-                        nameToReturn = "Hello Again, " +data.responseJSON.username;
-                        console.log("Hello Again, " + data.responseJSON.username);
-                    } else {
-                        setCookie("CookieMonster", data.responseJSON.token)
-                        nameToReturn = "Hello " + data.responseJSON.username;
-                        console.log("Hello, " + data.responseJSON.username);
-                    }
-                    // {#window.location.href = "/";#}
-                }
+async function checkCookie() {
+    var user = getCookie("CookieMonster");
+    var nameToReturn = ''
+    await $.ajax({
+        type: "POST",
+        url: "/user",
+        dataType: "json",
+        contentType: "application/json",
+        data: JSON.stringify({
+            token: user
+        }),
+        complete: function (data) {
+            if (user !== "NewUser") {
+                nameToReturn = "Hello Again, " + data.responseJSON.username;
+                console.log("Hello Again, " + data.responseJSON.username);
+            } else {
+                setCookie("CookieMonster", data.responseJSON.token)
+                nameToReturn = "Hello " + data.responseJSON.username;
+                console.log("Hello, " + data.responseJSON.username);
             }
-        );
-        return nameToReturn;
+        }
+    });
+    return nameToReturn;
     }

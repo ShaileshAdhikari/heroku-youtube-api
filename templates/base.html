@@ -14,8 +14,9 @@
 
 <script>
 window.onload = function() {
-    console.log("Working on Cookies");
-    document.getElementById("username").innerHTML = checkCookie();
+    checkCookie().then(function(data) {
+        document.getElementById("username").innerHTML = data;
+    });
 }
 </script>
 <script src =" {{ url_for('static', filename='cookie.js') }}"></script>

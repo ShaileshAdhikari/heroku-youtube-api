@@ -4,6 +4,7 @@ import isodate
 from dotenv import load_dotenv
 from flask import jsonify
 from googleapiclient.discovery import build
+from datetime import datetime
 
 load_dotenv()
 
@@ -260,6 +261,10 @@ def get_user_details(get_db_connection,user_token):
 
         return dict(get_db_connection.execute(check_sql, (token,)).mappings().first())
     else:
+        sql = """ UPDATE users SET last_access = %s  
+                  WHERE token = %s"""
+        update_data_entry(get_db_connection, sql, (datetime.now(),
+                                                   check_result['token']))
         return dict(check_result)
 
 def change_user_name(get_db_connection,user_token,new_name):

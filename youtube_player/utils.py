@@ -28,7 +28,7 @@ def get_a_name():
 
   if len(name_list) == 0:
     print("Reading the File")
-    with open('static/name_list.pkl','rb') as f:
+    with open('static/name_list.pkl', 'rb') as f:
       name_list = pickle.load(f)
 
   return secrets.choice(name_list)
@@ -188,7 +188,7 @@ def get_search_results(query):
             q=query,
             maxResults=10,
             type="video",
-            fields="items(etag,id/videoId,snippet(title,thumbnails/default))"
+            fields="items(etag,id/videoId,snippet(title,thumbnails/high))"
         )
         response = request.execute()
         video_id = [each['id']['videoId'] for each in response['items']]
@@ -213,7 +213,7 @@ def get_video_name(vid):
         request = get_api_connection().videos().list(
             part="snippet,contentDetails",
             id=vid,
-            fields="items(etag,snippet(title,thumbnails/default),contentDetails(duration))"
+            fields="items(etag,snippet(title,thumbnails/high),contentDetails(duration))"
         )
         response = request.execute()
 
@@ -258,9 +258,15 @@ def get_user_details(get_db_connection,user_token):
         print(db_update)
         print("New Entry Updated")
 
-        return dict(get_db_connection.execute(check_sql, (token,)).mappings().first())
+        return {
+            'status': False,
+            'token':dict(get_db_connection.execute(check_sql, (token,)).mappings().first())
+        }
     else:
-        return dict(check_result)
+        return {
+            'status': True,
+            'token': dict(check_result)
+        }
 
 def change_user_name(get_db_connection,user_token,new_name):
     sql = """ UPDATE users 

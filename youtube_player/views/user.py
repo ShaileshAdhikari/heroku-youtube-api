@@ -1,16 +1,17 @@
 from flask import session, Response, request, render_template, jsonify
 from youtube_player import app
-from youtube_player.models import *
-from .decorators import logged_in
+from youtube_player.models import User, db
+from youtube_player.decorators import logged_in
 
 @app.route("/auth/me",methods=['GET'])
+@logged_in
 def me():
 
-    if not session.get('logged_in'):
-        return jsonify({
-                'success':False,
-                'result':{'error':'Not logged in'}
-            })
+    # if not session.get('logged_in'):
+    #     return jsonify({
+    #             'success':False,
+    #             'result':{'error':'Not logged in'}
+    #         })
 
     records = User.query
     return jsonify({
@@ -87,4 +88,4 @@ def logout():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html',redirect='/',error=e), 404
+    return render_template('404.html', redirect='/', error=e), 404

@@ -20,7 +20,7 @@ class User(db.Model):
         self.email = email
         self.password = password
         self.cookie = hashlib.sha256(
-            (username + email + datetime.now()).encode('utf-8')
+            (username + email + str(datetime.now())).encode('utf-8')
         ).hexdigest()
 
     def __repr__(self):

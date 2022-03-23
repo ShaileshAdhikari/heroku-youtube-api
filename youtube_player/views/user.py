@@ -36,12 +36,14 @@ def register():
     email = data['email']
     password = data['password']
     if records.filter_by(email = email).first() is not None:
+        app.logger.warning('User already exists')
         return jsonify({
             'success': False,
             'result':{'error': 'Email already registered'},
         })
     db.session.add(User(username=username, email=email, password=password))
     db.session.commit()
+    app.logger.info(f'New User registered {email}|{username}')
     return jsonify({
         'success': True,
         'result':{'message': 'Registered Successfully !'},
@@ -62,6 +64,7 @@ def login():
 
     login_user = records.filter_by(email = email, password = password).first()
     if login_user is None:
+        app.logger.warning(f'Invalid credentials: {email}')
         return jsonify({
             'success': False,
             'result':{'error': 'Invalid credentials'}
@@ -69,6 +72,7 @@ def login():
     session['logged_in'] = True
     session['username'] = login_user.username
     session['email'] = login_user.email
+    app.logger.info(f'User logged in: {email}')
     return jsonify({
         'success': True,
         "result": {
@@ -82,6 +86,9 @@ def login():
 @logged_in
 def logout():
     session['logged_in'] = False
+    app.logger.info(f'User logged out: {session["email"]}')
+    session.pop('username', None)
+    session.pop('email', None)
     return Response({
         'success': True, 'result': {'message':'Logged out'}
     })

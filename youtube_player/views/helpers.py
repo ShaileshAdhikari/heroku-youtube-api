@@ -33,7 +33,7 @@ def return_vid(url: str) -> str:
 
 
 # Database Operations
-def db_addition(db: SQLAlchemy,dataObject):
+def db_addition(db: SQLAlchemy, dataObject):
     try:
         db.session.add(dataObject)
     except Exception as e:
@@ -42,6 +42,7 @@ def db_addition(db: SQLAlchemy,dataObject):
     else:
         db.session.commit()
         return True
+
 
 # Working on Video Vault Table
 def insert_to_video_vault(
@@ -65,6 +66,7 @@ def insert_to_video_vault(
     )
 
 
+# Get video details from video vault with vault_id
 def get_detail_from_vault(vault_id: list) -> dict:
     """
     Gets video details from the database VideoVault.
@@ -82,15 +84,17 @@ def get_detail_from_vault(vault_id: list) -> dict:
         else:
             yield {"video_id": False}
 
+
 # Working on Initial Entry Table
-def get_initial_entry() -> list:
+def get_initial_entry(get_one: bool = False) -> list:
     """
     Gets videos from initial entry.
+    :param get_one: To get one video or all videos
     """
     result = get_detail_from_vault(
-        InitialEntry.query.all()
+        InitialEntry.query.order_by(InitialEntry.added_on).all()
     )
-    return list(result)
+    return list(result)[0] if get_one else list(result)
 
 
 def insert_to_initial_entry(vault_id: int, db: SQLAlchemy) -> bool:
@@ -100,11 +104,13 @@ def insert_to_initial_entry(vault_id: int, db: SQLAlchemy) -> bool:
     initialObject = InitialEntry(vault_id=vault_id)
     return bool(db_addition(db, initialObject))
 
+
 def remove_from_initial_entry(vault_id: int, db: SQLAlchemy) -> dict:
     """
     Removes video from the initial entry.
     """
     pass
+
 
 def get_playing() -> list:
     """
@@ -115,12 +121,14 @@ def get_playing() -> list:
     )
     return list(result)
 
+
 # Working with YouTube APIs
 def get_api_connection() -> build:
     return build(api_service_name, api_version, developerKey=API)
 
 
 def get_search_results(query: str) -> list:
+    """ Gets search results from YouTube. """
     try:
         request = get_api_connection().search().list(
             part="snippet",
@@ -141,14 +149,15 @@ def get_search_results(query: str) -> list:
         return [{
             "id": each['id']['videoId'],
             "name": each['snippet']['title'],
-            "duration": each['duration'],
-            "thumbnail": each['snippet']['thumbnails']['default']['url'],
+            "duration": str(each['duration']),
+            "thumbnail": each['snippet']['thumbnails']['high']['url'],
         } for each in response['items']]
     except Exception as e:
         return [{"SEARCH ERROR": e}]
 
 
 def get_video_name(vid: str) -> list:
+    """ Gets video name from YouTube. """
     try:
         request = get_api_connection().videos().list(
             part="snippet,contentDetails",
@@ -160,14 +169,15 @@ def get_video_name(vid: str) -> list:
         return [{
             "id": vid,
             "name": each['snippet']['title'],
-            "duration": isodate.parse_duration(each['contentDetails']['duration']),
-            "thumbnail": each['snippet']['thumbnails']['default']['url'],
+            "duration": str(isodate.parse_duration(each['contentDetails']['duration'])),
+            "thumbnail": each['snippet']['thumbnails']['high']['url'],
         } for each in response['items']]
     except Exception as e:
         return [{"ERROR": e}]
 
 
 def get_video_duration(vid: list) -> list:
+    """ Gets video duration from YouTube. """
     request = get_api_connection().videos().list(
         part="contentDetails",
         id=vid,
@@ -178,3 +188,10 @@ def get_video_duration(vid: list) -> list:
     return [{"id": each['id'],
              "duration": each['contentDetails']['duration']
              } for each in response['items']]
+
+
+def clean_playings(db: SQLAlchemy) -> bool:
+    """ Cleans the currently playing table. """
+    db.session.query(CurrentlyPlaying).delete()
+    db.session.commit()
+    return True

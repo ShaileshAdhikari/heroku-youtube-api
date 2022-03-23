@@ -90,11 +90,11 @@ def link():
 # @app.route("/end", methods=['GET'])
 # def on_player_end():
 #     try:
-#         truncate(get_db_connection,'DELETE FROM playing')
+#         clean_playings(db)
 #     except Exception as e:
 #         print("Issue with Truncate !")
 #
-#     initial_result = initial_table_gettop(get_db_connection)
+#     initial_result = get_initial_entry(get_one=True)
 #
 #     if initial_result is None:
 #         videos = get_from_already_played(get_db_connection)
@@ -122,7 +122,7 @@ def link():
 #                           result['duration'],result['thumbnail'],result['updated_by'])
 #
 #     return result['id']
-#
+
 # @app.route("/user", methods=['POST'])
 # def user():
 #     if request.method == 'POST':

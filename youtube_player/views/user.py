@@ -89,7 +89,7 @@ def logout():
     app.logger.info(f'User logged out: {session["email"]}')
     session.pop('username', None)
     session.pop('email', None)
-    return Response({
+    return jsonify({
         'success': True, 'result': {'message':'Logged out'}
     })
 

@@ -7,7 +7,7 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    username = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     cookie = db.Column(db.String(120), nullable=False)
@@ -32,11 +32,11 @@ class VideoVault(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     video_id = db.Column(db.String(80), unique=True, nullable=False)
-    name = db.Column(db.String(80), unique=True, nullable=False)
-    thumbnail = db.Column(db.String(80), unique=True, nullable=False)
-    duration = db.Column(db.String(80), unique=True, nullable=False)
+    name = db.Column(db.String(80), nullable=False)
+    thumbnail = db.Column(db.String(80), nullable=False)
+    duration = db.Column(db.String(80), nullable=False)
     added_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    added_on = db.Column(db.DateTime, nullable=False)
+    added_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
     last_played_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
     play_count = db.Column(db.Integer, nullable=False, default=0)
 
@@ -49,22 +49,18 @@ class InitialEntry(db.Model):
     __tablename__ = 'initial_entry'
 
     id = db.Column(db.Integer, primary_key=True)
-    video_id = db.Column(db.String(80), unique=True, nullable=False)
-    name = db.Column(db.String(80), unique=True, nullable=False)
-    thumbnail = db.Column(db.String(80), unique=True, nullable=False)
-    duration = db.Column(db.String(80), unique=True, nullable=False)
-    added_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    vault_id = db.Column(db.Integer, db.ForeignKey('video_vault.id'),nullable=False)
     added_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
     def __repr__(self):
-        return '<InitialEntry %r>' % self.name
+        return '<InitialEntry %r>' % self.vault_id
 
 class CurrentlyPlaying(db.Model):
 
     __tablename__ = 'currently_playing'
 
     id = db.Column(db.Integer, primary_key=True)
-    vault_id = db.Column(db.Integer, db.ForeignKey('video_vault.id'), nullable=False)
+    vault_id = db.Column(db.Integer, db.ForeignKey('video_vault.id'),nullable=False)
     added_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
     def __repr__(self):

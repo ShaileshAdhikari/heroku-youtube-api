@@ -12,7 +12,7 @@ def youtube_frame(res='Successful'):
 def playlist():
     if request.method == 'GET':
         result = get_initial_entry()
-        app.logger.info(f"Getting Values from Initial Entry by {session['username']}")
+        app.logger.info(f"Getting Values from Initial Entry by {session['email']}")
         return jsonify({
                 'success': True,
                 'result':{'data': result},
@@ -31,13 +31,13 @@ def playlist():
             videoDuration, addedBy, db
         )
         if result['video_id'] and insert_to_initial_entry(result['video_id'],db):
-            app.logger.info(f"Added new video by {session['username']}")
+            app.logger.info(f"Added new video by {session['email']}")
             return jsonify({
                 'success': True,
                 'result':{'message': 'Added Successfully !'},
             })
         else:
-            app.logger.error(f"Error adding video by {session['username']}")
+            app.logger.error(f"Error adding video by {session['email']}")
             return jsonify({
                 'success': False,
                 'result':{'error': 'Addition Error !'},
@@ -51,7 +51,7 @@ def playing():
         result = get_playing()
         # get mac address of the device
         print(request.remote_addr)
-        app.logger.info(f"Getting Current Playing by {session['username']}")
+        app.logger.info(f"Getting Current Playing by {session['email']}")
         return jsonify({
                 'success': True,
                 'result':{'data': result},
@@ -80,6 +80,70 @@ def link():
                 'result':{'data': result},
             })
 
+@app.route("/end", methods=['GET'])
+def on_player_end():
+    try:
+        clean_playings(db)
+    except Exception as e:
+        print("Issue with Truncate !")
+
+    initial_result = get_initial_entry(get_one=True)
+
+    if len(initial_result) == 0:
+        # Get video from the Video Vault
+        video = get_video_from_vault()
+        if video is not None:
+            # Adding to Playing
+            if db_addition(
+                CurrentlyPlaying(vault_id=initial_result.vault_id),
+                db
+            ):
+                app.logger.info(f"Added video to play by {session['email']}")
+            else:
+                app.logger.error(f"Error adding video to play by {session['email']}")
+                return jsonify({
+                    'success': False,
+                    'result':{'error': 'Addition Error !'},
+                })
+        else:
+            app.logger.error(f"Error adding video to play by {session['email']}")
+            return jsonify({
+                'success': False,
+                'result':{'error': 'No Video On Vault !'},
+            })
+
+    else:
+        initial_result = initial_result[0]
+        # remove initial_result video from initial_entry
+        if db_deletion(db,
+            InitialEntry.query.where(InitialEntry.vault_id == initial_result['vault_id']).first(),
+        ):
+            app.logger.info(f"Deleted Initial Entry by {session['email']}")
+
+            # add initial_result video to playing
+            if db_addition(db,
+                CurrentlyPlaying(vault_id=initial_result['vault_id']),
+            ):
+                app.logger.info(f"Added Initial Entry to Playing by {session['email']}")
+            else:
+                app.logger.error(f"On adding Initial Entry to Playing by {session['email']}")
+                return jsonify({
+                    'success': False,
+                    'result':{'error': 'Error on adding video on player !'},
+                })
+        else:
+            app.logger.error(f"On adding Removing from InitialEntry by {session['email']}")
+            return jsonify({
+                'success': False,
+                'result':{'error': 'Error on updating Initial Playlist !'},
+            })
+
+    # get video_id from playing and update vault count
+    result = get_playing()[0]
+    update_video_vault_count(result['vault_id'],db)
+
+    return result['video_id']
+
 # @app.route("/most-played", methods=['GET'])
 # @logged_in
 # def get_most_played():
@@ -87,41 +151,6 @@ def link():
 #         result = most_played(get_db_connection)
 #         return to_json(result)
 #
-# @app.route("/end", methods=['GET'])
-# def on_player_end():
-#     try:
-#         clean_playings(db)
-#     except Exception as e:
-#         print("Issue with Truncate !")
-#
-#     initial_result = get_initial_entry(get_one=True)
-#
-#     if initial_result is None:
-#         videos = get_from_already_played(get_db_connection)
-#         if videos is None:
-#             return 'TIME TO ADD VIDEOS ! !'
-#
-#         videos = dict(videos)
-#         add_to_playing(get_db_connection, videos['id'], videos['name'],
-#                        videos['duration'],videos['thumbnail'],videos['updated_by'])
-#
-#         # result = dict(table_playing(get_db_connection))
-#         #
-#         # update_already_played(get_db_connection, result['id'])
-#
-#     else:
-#         initial_result = dict(initial_result)
-#         remove_entry(get_db_connection, 'DELETE FROM initial_entry WHERE video_id=%s', initial_result['id'])
-#
-#         add_to_playing(get_db_connection,initial_result['id'], initial_result['name'],
-#                        initial_result['duration'],initial_result['thumbnail'],initial_result['updated_by'])
-#
-#     result = dict(table_playing(get_db_connection))
-#
-#     add_to_already_played(get_db_connection,result['id'], result['name'],
-#                           result['duration'],result['thumbnail'],result['updated_by'])
-#
-#     return result['id']
 
 # @app.route("/user", methods=['POST'])
 # def user():
@@ -132,7 +161,7 @@ def link():
 # # _____________________________________________________________
 #
 # @app.route("/user/change", methods=['POST'])
-# def change_username():
+# def change_email():
 #     if request.method == 'POST':
 #         data = request.get_json()
 #         token = data['token']

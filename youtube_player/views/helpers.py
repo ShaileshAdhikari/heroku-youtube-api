@@ -1,5 +1,7 @@
-from flask_sqlalchemy import SQLAlchemy
+import itertools
 
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime,timedelta
 import os, re
 import isodate
 from dotenv import load_dotenv
@@ -11,6 +13,13 @@ API = os.getenv('API')
 api_service_name = "youtube"
 api_version = "v3"
 
+
+def peek(iterable):
+    try:
+        first = next(iterable)
+    except StopIteration:
+        return None
+    return first, itertools.chain([first], iterable)
 
 # Checking url with regex and return video_id
 def return_vid(url: str) -> str:
@@ -36,6 +45,16 @@ def return_vid(url: str) -> str:
 def db_addition(db: SQLAlchemy, dataObject):
     try:
         db.session.add(dataObject)
+    except Exception as e:
+        print("error:", e)
+        return False
+    else:
+        db.session.commit()
+        return True
+
+def db_deletion(db: SQLAlchemy, dataObject):
+    try:
+        db.session.delete(dataObject)
     except Exception as e:
         print("error:", e)
         return False
@@ -75,6 +94,7 @@ def get_detail_from_vault(vault_id: list) -> dict:
         video = VideoVault.query.filter_by(id=each.vault_id).first()
         if video:
             yield {
+                "vault_id": video.id,
                 "video_id": video.video_id,
                 "name": video.name,
                 "thumbnail": video.thumbnail,
@@ -85,6 +105,32 @@ def get_detail_from_vault(vault_id: list) -> dict:
             yield {"video_id": False}
 
 
+def get_video_from_vault():
+    """
+    Gets video from the database VideoVault.
+    """
+    video = VideoVault.query.filter(
+        VideoVault.last_played_on <= (datetime.now() - timedelta(minutes=90))
+    )
+    if video.first() is not None:
+        result = get_detail_from_vault(
+            video.order_by(VideoVault.play_count).first()
+        )
+        return next(result)
+    else:
+        return None
+
+def update_video_vault_count(vault_id: str, db: SQLAlchemy) -> bool:
+    # sourcery skip: use-named-expression
+    """
+    Updates video count in the database VideoVault.
+    """
+    video = VideoVault.query.filter_by(id=vault_id).first()
+    if video:
+        video.play_count += 1
+        return db_addition(db, video)
+    return False
+
 # Working on Initial Entry Table
 def get_initial_entry(get_one: bool = False) -> list:
     """
@@ -94,7 +140,11 @@ def get_initial_entry(get_one: bool = False) -> list:
     result = get_detail_from_vault(
         InitialEntry.query.order_by(InitialEntry.added_on).all()
     )
-    return list(result)[0] if get_one else list(result)
+    check,generator = peek(result)
+    if check is None:
+        return []
+    else:
+        return [check] if get_one else list(generator)
 
 
 def insert_to_initial_entry(vault_id: int, db: SQLAlchemy) -> bool:

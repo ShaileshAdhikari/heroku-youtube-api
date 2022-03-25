@@ -1,7 +1,10 @@
+from datetime import datetime
+
 from flask import session, Response, request, render_template, jsonify
 from youtube_player import app
 from youtube_player.models import User, db
 from youtube_player.decorators import logged_in
+from .helpers import db_addition
 
 @app.route("/auth/me",methods=['GET'])
 @logged_in
@@ -72,6 +75,10 @@ def login():
     session['logged_in'] = True
     session['username'] = login_user.username
     session['email'] = login_user.email
+
+    login_user.last_login = datetime.now()
+    db_addition(db,login_user)
+
     app.logger.info(f'User logged in: {email}')
     return jsonify({
         'success': True,

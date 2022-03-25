@@ -13,7 +13,7 @@ class User(db.Model):
     cookie = db.Column(db.String(120), nullable=False)
     active = db.Column(db.Boolean, default=1)
     registered_on = db.Column(db.DateTime, nullable=False,default=datetime.now)
-    last_login = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    last_login = db.Column(db.DateTime, nullable=True, onupdate=datetime.now)
 
     def __init__(self, username, email, password):
         self.username = username
@@ -37,7 +37,7 @@ class VideoVault(db.Model):
     duration = db.Column(db.String(80), nullable=False)
     added_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     added_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    last_played_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    last_played_on = db.Column(db.DateTime, nullable=True, onupdate=datetime.now)
     play_count = db.Column(db.Integer, nullable=False, default=0)
 
     def __repr__(self):

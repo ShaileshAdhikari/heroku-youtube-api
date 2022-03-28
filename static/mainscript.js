@@ -54,8 +54,7 @@ function changeBorderColor(playerStatus) {
 function onPlayerStateChange(event) {
     console.log("state Changed", event)
     changeBorderColor(event.data);
-    if ((event.data == YT.PlayerState.ENDED) ||
-        (event.data == YT.PlayerState.UNSTARTED)) {
+    if (event.data == YT.PlayerState.ENDED) {
         console.log("PLAYER ENDED")
         $.get("/end", function (res, status){
             console.log(res)
@@ -65,7 +64,6 @@ function onPlayerStateChange(event) {
             }else {
                 $( "h1#remarks-h1" ).html( "Remarks: SUCCESSFUL" );
                 player.loadVideoById(res)
-                player.playVideo()
             }
         })
     }
@@ -83,12 +81,14 @@ function VolumeDown() {
 }
 
 function DeleteCurrent() {
-    $.get("/remove", function (res, status) {
-        console.log(res)
-        if (res['status']){
-            player.stopVideo()
+    $.get("/delete-new", function (res, status){
+    console.log(res)
+        if (res.length > 15){
+            $( "h1#remarks-h1" ).html( "Remarks: " + res );
+            player.playVideo()
         }else {
-            alert("Error: " + res)
+            $( "h1#remarks-h1" ).html( "Remarks: SUCCESSFUL" );
+            player.loadVideoById(res)
         }
     })
 }

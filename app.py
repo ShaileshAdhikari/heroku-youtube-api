@@ -111,6 +111,43 @@ def on_player_end():
 
     return result['id']
 
+
+@app.route("/delete-new", methods=['GET'])
+def delete_get_new():
+    id = dict(table_playing(get_db_connection))
+    remove_entry(
+        get_db_connection,
+        'DELETE FROM already_played WHERE video_id=%s',
+        id['id'],
+    )
+
+    try:
+        truncate(get_db_connection,'DELETE FROM playing')
+    except Exception as e:
+        print("Issue with Truncate !")
+
+    initial_result = initial_table_gettop(get_db_connection)
+
+    if initial_result is None:
+        videos = get_from_already_played(get_db_connection)
+        if videos is None:
+            return 'TIME TO ADD VIDEOS ! !'
+
+        videos = dict(videos)
+        add_to_playing(get_db_connection, videos['id'], videos['name'],
+                       videos['duration'],videos['thumbnail'],videos['updated_by'])
+
+    else:
+        initial_result = dict(initial_result)
+        remove_entry(get_db_connection, 'DELETE FROM initial_entry WHERE video_id=%s', initial_result['id'])
+
+        add_to_playing(get_db_connection,initial_result['id'], initial_result['name'],
+                       initial_result['duration'],initial_result['thumbnail'],initial_result['updated_by'])
+
+    result = dict(table_playing(get_db_connection))
+
+    return result['id']
+
 @app.route("/user", methods=['POST'])
 def user():
     if request.method == 'POST':

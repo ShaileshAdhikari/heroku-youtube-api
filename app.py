@@ -130,11 +130,11 @@ def change_username():
 @app.route("/remove", methods=['DELETE'])
 def remove():
     if request.method == 'DELETE':
-        id = request.args.get('id')
+        id = dict(table_playing(get_db_connection))
         return remove_entry(
             get_db_connection,
-            'DELETE FROM initial_entry WHERE video_id=%s',
-            id,
+            'DELETE FROM already_played WHERE video_id=%s',
+            id['id'],
         )
 
 # _______________________________________________________________

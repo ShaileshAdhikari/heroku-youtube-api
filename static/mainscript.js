@@ -79,3 +79,10 @@ function VolumeDown() {
     player.setVolume(player.getVolume() - 5);
     document.getElementById('volume-meter').value = player.getVolume();
 }
+
+function DeleteCurrent() {
+    $.delete("/remove", function (res, status) {
+        console.log(res)
+    })
+}
+

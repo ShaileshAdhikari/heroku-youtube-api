@@ -132,7 +132,7 @@ def on_player_end():
                     'result':{'error': 'Error on adding video on player !'},
                 })
         else:
-            app.logger.error(f"On adding Removing from InitialEntry by {session['email']}")
+            app.logger.error(f"On removing from InitialEntry by {session['email']}")
             return jsonify({
                 'success': False,
                 'result':{'error': 'Error on updating Initial Playlist !'},
@@ -180,33 +180,33 @@ def on_player_end():
 #
 # # _______________________________________________________________
 #
-# @app.route("/", methods=['POST', 'GET'])
-# def search_add():
-#     global res
-#     table_data = to_json(initial_table_getall(get_db_connection))
-#     playing = [dict(table_playing(get_db_connection))
-#                if table_playing(get_db_connection) is not None else []]
-#
-#     if request.method == 'GET':
-#         return render_template("search.html", response='',
-#                                status=res, songl=table_data,
-#                                playing = playing)
-#     if request.method == 'POST':
-#         searchQ = request.form['search']
-#         vLink= request.form['vLink']
-#
-#         if (len(searchQ) | len(vLink)) == 0:
-#             response = "Please enter 'SEARCH STRING' of 'VIDEO URL' !"
-#         elif len(vLink) == 0:
-#             response = get_search_results(searchQ) if len(searchQ) > 3 else 'Query should have at least 3 words !'
-#         elif len(searchQ) == 0:
-#             vId = return_vid(vLink)
-#             response = 'Invalid Video Link !' if vId == "INVALID URL" else get_video_name(vId)
-#         else:
-#             response = "I don't know what happen !"
-#
-#         res = 'Successfully Added Last One !'
-#         # return redirect(url_for('search_add',response = response))
-#         return render_template("search.html", response=response,
-#                                songl=table_data, status='Click To Add !',
-#                                playing = playing)
+@app.route("/", methods=['POST', 'GET'])
+def search_add():
+    global res
+    table_data = get_initial_entry()
+    play_dict = get_playing()[0]
+    playing = [play_dict if play_dict is not None else []]
+
+    if request.method == 'GET':
+        return render_template("search.html", response='',
+                               status=res, songl=table_data,
+                               playing = playing)
+    if request.method == 'POST':
+        searchQ = request.form['search']
+        vLink= request.form['vLink']
+
+        if (len(searchQ) | len(vLink)) == 0:
+            response = "Please enter 'SEARCH STRING' of 'VIDEO URL' !"
+        elif len(vLink) == 0:
+            response = get_search_results(searchQ) if len(searchQ) > 3 else 'Query should have at least 3 words !'
+        elif len(searchQ) == 0:
+            vId = return_vid(vLink)
+            response = 'Invalid Video Link !' if vId == "INVALID URL" else get_video_name(vId)
+        else:
+            response = "I don't know what happen !"
+
+        res = 'Successfully Added Last One !'
+        # return redirect(url_for('search_add',response = response))
+        return render_template("search.html", response=response,
+                               songl=table_data, status='Click To Add !',
+                               playing = playing)

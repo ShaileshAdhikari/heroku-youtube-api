@@ -127,9 +127,9 @@ def change_username():
         new_name = data['name']
         return change_user_name(get_db_connection,token,new_name)
 
-@app.route("/remove", methods=['DELETE'])
+@app.route("/remove", methods=['GET'])
 def remove():
-    if request.method == 'DELETE':
+    if request.method == 'GET':
         id = dict(table_playing(get_db_connection))
         return remove_entry(
             get_db_connection,

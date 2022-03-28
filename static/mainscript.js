@@ -81,8 +81,13 @@ function VolumeDown() {
 }
 
 function DeleteCurrent() {
-    $.delete("/remove", function (res, status) {
+    $.get("/remove", function (res, status) {
         console.log(res)
+        if (res['status']){
+            player.stopVideo()
+        }else {
+            alert("Error: " + res)
+        }
     })
 }
 

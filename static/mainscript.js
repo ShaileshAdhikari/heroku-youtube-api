@@ -54,7 +54,8 @@ function changeBorderColor(playerStatus) {
 function onPlayerStateChange(event) {
     console.log("state Changed", event)
     changeBorderColor(event.data);
-    if (event.data == YT.PlayerState.ENDED) {
+    if ((event.data == YT.PlayerState.ENDED) ||
+        (event.data == YT.PlayerState.UNSTARTED)) {
         console.log("PLAYER ENDED")
         $.get("/end", function (res, status){
             console.log(res)

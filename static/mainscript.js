@@ -65,6 +65,7 @@ function onPlayerStateChange(event) {
             }else {
                 $( "h1#remarks-h1" ).html( "Remarks: SUCCESSFUL" );
                 player.loadVideoById(res)
+                player.playVideo()
             }
         })
     }

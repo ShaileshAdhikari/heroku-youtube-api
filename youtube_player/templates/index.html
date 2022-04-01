@@ -63,7 +63,6 @@
             contentType: "application/json",
             data: JSON.stringify({
                 id,name,thumbnail,duration,
-                token:getCookie("CookieMonster")
             }),
             complete: function() {
                 console.log("COMPLETED");

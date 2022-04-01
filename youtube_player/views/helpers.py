@@ -18,7 +18,7 @@ def peek(iterable):
     try:
         first = next(iterable)
     except StopIteration:
-        return None
+        return None, None
     return first, itertools.chain([first], iterable)
 
 # Checking url with regex and return video_id

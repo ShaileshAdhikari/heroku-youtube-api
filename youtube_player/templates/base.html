@@ -4,22 +4,27 @@
     <script
       src="https://code.jquery.com/jquery-3.6.0.js"
       integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-      crossorigin="anonymous"></script>
+      crossorigin="anonymous">
+
+    </script>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+    <link rel="stylesheet" href=" {{ url_for('static', filename='login.css') }}">
+    <link rel="stylesheet" href=" {{ url_for('static', filename='main.css') }}">
 </head>
 <body>
+    {% for category, message in get_flashed_messages(with_categories=True) %}
+        <div class="alert alert-{{category}}">{{ message }}</div>
+    {% endfor %}
+
     <div>
-        <h3 id="username"></h3>
+        <h3 id="username">
+            {%  if session['logged_in'] %}
+                Welcome, {{ session['username'] }}
+            {%  endif %}
+        </h3>
     </div>
     {% block content %} {% endblock %}
 
-<script>
-window.onload = function() {
-    checkCookie().then(function(data) {
-        document.getElementById("username").innerHTML = data;
-    });
-}
-</script>
-<script src =" {{ url_for('static', filename='cookie.js') }}"></script>
 <script src=" {{ url_for('static', filename='mainscript.js') }}"></script>
 
 </body>

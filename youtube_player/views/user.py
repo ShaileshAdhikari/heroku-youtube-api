@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import session, Response, request, render_template, jsonify
+from flask import session, flash, request, render_template, jsonify
 from youtube_player import app
 from youtube_player.models import User, db
 from youtube_player.decorators import logged_in
@@ -9,13 +9,6 @@ from .helpers import db_addition
 @app.route("/auth/me",methods=['GET'])
 @logged_in
 def me():
-
-    # if not session.get('logged_in'):
-    #     return jsonify({
-    #             'success':False,
-    #             'result':{'error':'Not logged in'}
-    #         })
-
     records = User.query
     return jsonify({
         'success':True,
@@ -25,15 +18,17 @@ def me():
         }
         })
 
-@app.route('/auth/register',methods=['POST'])
+@app.route('/auth/register',methods=['POST','GET'])
 def register():
     records = User.query
 
     if request.method != 'POST':
-        return jsonify({
-            'success': False,
-            'result': {'error': 'Invalid request'}
-        })
+        return render_template('register.html')
+
+        # return jsonify({
+        #     'success': False,
+        #     'result': {'error': 'Invalid request'}
+        # })
     data = request.get_json()
     username = data['username']
     email = data['email']
@@ -52,26 +47,38 @@ def register():
         'result':{'message': 'Registered Successfully !'},
     })
 
-@app.route("/auth/login",methods=['POST'])
+@app.route("/auth/login",methods=['POST','GET'])
 def login():
-    records = User.query
 
     if request.method != 'POST':
-        return jsonify({
-            'success': False,
-            'result':{'error': 'Invalid request'},
-        })
-    data = request.get_json()
-    email = data['email']
-    password = data['password']
+        return render_template('login.html')
+        # return jsonify({
+        #     'success': False,
+        #     'result':{'error': 'Invalid request'},
+        # })
 
-    login_user = records.filter_by(email = email, password = password).first()
-    if login_user is None:
-        app.logger.warning(f'Invalid credentials: {email}')
-        return jsonify({
-            'success': False,
-            'result':{'error': 'Invalid credentials'}
-        })
+    records = User.query
+    data = dict(request.form)
+    email = data['user-email']
+    password = data['user-password']
+    if len(email) != 0 and len(password) != 0:
+        login_user = records.filter_by(email = email, password = password).first()
+        if login_user is None:
+            app.logger.warning(f'Invalid credentials: {email}')
+
+            flash('Email or Password is incorrect. Try Again !','error')
+            return render_template('login.html')
+            # return jsonify({
+            #     'success': False,
+            #     'result':{'error': 'Invalid credentials'}
+            # })
+    else:
+        flash('Email or Password is required.','error')
+        return render_template('login.html')
+        # return jsonify({
+        #     'success': False,
+        #     'result':{'error': 'Invalid credentials'}
+        # })
     session['logged_in'] = True
     session['username'] = login_user.username
     session['email'] = login_user.email
@@ -80,13 +87,14 @@ def login():
     db_addition(db,login_user)
 
     app.logger.info(f'User logged in: {email}')
-    return jsonify({
-        'success': True,
-        "result": {
-            'username': session['username'], 'email': session['email'],
-            'token': login_user.cookie
-        }
-    })
+    # return jsonify({
+    #     'success': True,
+    #     "result": {
+    #         'username': session['username'], 'email': session['email'],
+    #         'token': login_user.cookie
+    #     }
+    # })
+    return render_template('index.html')
 
 
 @app.route('/auth/logout',methods=['POST'])
@@ -96,10 +104,11 @@ def logout():
     app.logger.info(f'User logged out: {session["email"]}')
     session.pop('username', None)
     session.pop('email', None)
-    return jsonify({
-        'success': True, 'result': {'message':'Logged out'}
-    })
+    # return jsonify({
+    #     'success': True, 'result': {'message':'Logged out'}
+    # })
+    return render_template('index.html')
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html', redirect='/', error=e), 404
+    return render_template('404.html', error=e), 404

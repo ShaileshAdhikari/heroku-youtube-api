@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- partial:index.partial.html -->
+<div class="login-form">
+  <form action="{{ url_for('login') }}" method = "POST">
+    <h1>Login</h1>
+    <div class="content">
+      <div class="input-field">
+        <input type="email" name="user-email" placeholder="Email" autocomplete="nope">
+      </div>
+      <div class="input-field">
+        <input type="password" name="user-password" placeholder="Password" autocomplete="new-password">
+      </div>
+      <a href="#" class="link">Forgot Your Password?</a>
+    </div>
+    <div class="action">
+      <button type="submit" >Sign in</button>
+    </div>
+  </form>
+</div>
+<p class="footer-text">Need new Account ? <a href="{{ url_for('register') }}">Register</a></p>
+
+<!-- partial -->
+{% endblock %}

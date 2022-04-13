@@ -2,7 +2,7 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
-
+import os
 
 from flask_migrate import Migrate
 from sys import exit
@@ -34,4 +34,5 @@ if DEBUG:
     app.logger.info(f'DBMS        = {app_config.SQLALCHEMY_DATABASE_URI}')
 
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get('PORT', 5055))
+    app.run(host='localhost', debug=DEBUG, port=port)

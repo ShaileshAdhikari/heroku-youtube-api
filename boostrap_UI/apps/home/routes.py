@@ -7,13 +7,24 @@ from flask import render_template, request
 from flask_login import login_required,current_user
 from jinja2 import TemplateNotFound
 
-from apps.home.models import VideoVault, InitialEntry, CurrentlyPlaying
+from .models import VideoVault, InitialEntry, CurrentlyPlaying
+from .util import get_initial_entry, get_playing
 
 @blueprint.route('/index')
 @login_required
 def index():
+    table_data = get_initial_entry()
+    play_dict = get_playing()[0]
+    playing = [play_dict if play_dict is not None else []]
 
-    return render_template('home/index.html', segment='index', user = current_user)
+    return render_template('home/index.html',
+                           segment='index',
+                           user = current_user,
+                           songList = table_data,
+                           playing = playing,
+                           searchItems = [],
+                           mostPlayed = [],
+                           )
 
 
 @blueprint.route('/<template>')

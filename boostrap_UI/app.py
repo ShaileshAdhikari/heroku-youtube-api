@@ -12,7 +12,7 @@ from apps.config import config_dict
 from apps import create_app, db
 
 # WARNING: Don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 # The configuration
 get_config_mode = 'Debug' if DEBUG else 'Production'
@@ -34,5 +34,5 @@ if DEBUG:
     app.logger.info(f'DBMS        = {app_config.SQLALCHEMY_DATABASE_URI}')
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 5055))
-    app.run(host='localhost', debug=DEBUG, port=port)
+    # port = int(os.environ.get('PORT', 5055))
+    app.run(host='localhost', debug=False, port=5000)

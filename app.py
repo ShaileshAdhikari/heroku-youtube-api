@@ -34,4 +34,4 @@ if DEBUG:
 
 if __name__ == "__main__":
     # port = int(os.environ.get('PORT', 5055))
-    app.run(host='localhost', debug=False, port=5000)
+    app.run(host='localhost', debug=True, port=5000)

@@ -44,7 +44,7 @@ def index():
         else:
             return render_template(
                 'home/index.html', segment='index', user=current_user,
-                songList=table_data, playing=playing, mostPlayed=[],
+                songList=table_data, playing=playing, mostPlayed=most_played,
                 message="Please enter at least 5 characters"
             )
 
@@ -68,8 +68,9 @@ def on_player_end():
 
     if len(initial_result) == 0:
         # Get video from the Video Vault
-        video = list(get_video_from_vault())[0]
-        if video is not None:
+        video = list(get_video_from_vault())
+        if len(video) > 0:
+            video = video[0]
             # Adding to Playing
             if db_addition(
                     db,
@@ -119,7 +120,10 @@ def on_player_end():
     result = get_playing()[0]
     update_video_vault_count(result['vault_id'], db)
 
-    return result['video_id']
+    return jsonify({
+        'success': True,
+        'result': result['video_id'],
+    })
 
 
 @blueprint.route("/playlist", methods=['POST'])

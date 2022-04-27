@@ -58,13 +58,18 @@ function onPlayerStateChange(event) {
         console.log("PLAYER ENDED")
         $.get("/end", function (res, status){
             console.log(res)
-            if (res.length > 15){
-                $( "h1#remarks-h1" ).html( "Remarks: " + res );
-                player.playVideo()
+            if (res.success) {
+                if (res.result > 15){
+                    $( "h1#remarks-h1" ).html( "Remarks: " + res.result );
+                    player.playVideo()
+                }else {
+                    $( "h1#remarks-h1" ).html( "Remarks: SUCCESSFUL" );
+                    player.loadVideoById(res.result)
+                }
             }else {
-                $( "h1#remarks-h1" ).html( "Remarks: SUCCESSFUL" );
-                player.loadVideoById(res)
+                $( "h1#remarks-h1" ).html( "Remarks: " +res.result.error);
             }
+
         })
     }
 }

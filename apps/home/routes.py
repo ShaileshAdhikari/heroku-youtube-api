@@ -7,7 +7,7 @@ from flask import render_template, request, jsonify, current_app as app
 from flask_login import login_required, current_user
 from jinja2 import TemplateNotFound
 from apps import db
-
+from apps.decorators import check_for_admin
 from .models import VideoVault, InitialEntry, CurrentlyPlaying
 from .util import (
     get_initial_entry, get_playing, clean_playings, get_video_from_vault,
@@ -48,6 +48,7 @@ def index():
 
 @blueprint.route('/frame')
 @login_required
+@check_for_admin
 def youtube_frame():
     return render_template('home/frame.html', user=current_user)
 

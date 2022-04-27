@@ -15,8 +15,8 @@ class VideoVault(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     video_id = db.Column(db.String(80), unique=True, nullable=False)
-    name = db.Column(db.String(80), nullable=False)
-    thumbnail = db.Column(db.String(80), nullable=False)
+    name = db.Column(db.String(225), nullable=False)
+    thumbnail = db.Column(db.String(225), nullable=False)
     duration = db.Column(db.String(80), nullable=False)
     added_by = db.Column(db.Integer, db.ForeignKey('Users.id'), nullable=False)
     added_on = db.Column(db.DateTime, nullable=False, default=datetime.now)

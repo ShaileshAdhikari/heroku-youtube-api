@@ -39,7 +39,8 @@ def return_vid(url: str) -> str:
     elif p3.match(url):
         return p3.match(url)[0].split('=')[1]
     else:
-        raise ValueError(f'Invalid URL:"{url}", please check the URL')
+        # raise ValueError(f'Invalid URL:"{url}", please check the URL')
+        return 'InvalidURL'
 
 
 # Database Operations
@@ -114,15 +115,20 @@ def get_video_from_vault():
     Gets video from the database VideoVault.
     """
     video = VideoVault.query.filter(
-        VideoVault.last_played_on <= (datetime.now() - timedelta(minutes=90))
+        VideoVault.last_played_on <= (datetime.now() - timedelta(minutes=1))
     )
     if video.first() is not None:
-        result = get_detail_from_vault(
-            video.order_by(VideoVault.play_count).first()
-        )
-        return next(result)
+        result = video.order_by(VideoVault.play_count).first()
+        yield {
+            "vault_id": result.id,
+            "video_id": result.video_id,
+            "name": result.name,
+            "thumbnail": result.thumbnail,
+            "duration": result.duration,
+            "added_by": Users.query.filter_by(id=result.added_by).first().username
+        }
     else:
-        return None
+        return [None]
 
 def update_video_vault_count(vault_id: str, db: SQLAlchemy) -> bool:
     # sourcery skip: use-named-expression
@@ -145,7 +151,7 @@ def get_initial_entry(get_one: bool = False) -> list:
         InitialEntry.query.order_by(InitialEntry.added_on).all()
     )
     check,generator = peek(result)
-    if check is None:
+    if not check['video_id']:
         return []
     else:
         return [check] if get_one else list(generator)

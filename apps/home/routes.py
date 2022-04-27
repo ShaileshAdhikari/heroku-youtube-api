@@ -12,7 +12,7 @@ from .models import VideoVault, InitialEntry, CurrentlyPlaying
 from .util import (
     get_initial_entry, get_playing, clean_playings, get_video_from_vault,
     db_addition, db_deletion, update_video_vault_count, return_vid, get_search_results,
-    get_video_name,insert_to_video_vault,insert_to_initial_entry
+    get_video_name,insert_to_video_vault,insert_to_initial_entry,get_most_played
 )
 
 
@@ -22,10 +22,13 @@ def index():
     table_data = get_initial_entry()
     play_dict = get_playing()[0]
     playing = [play_dict if play_dict is not None else []]
+    _most = get_most_played()[0]
+    most_played = [_most if _most is not None else []]
+
     if request.method == 'GET':
         return render_template(
             'home/index.html', segment='index', user=current_user,
-            songList=table_data, playing=playing, mostPlayed=[]
+            songList=table_data, playing=playing, mostPlayed=most_played
         )
     if request.method == 'POST':
         search_string = request.form['search-box']
@@ -35,7 +38,7 @@ def index():
 
             return render_template(
                 'home/index.html', segment='search', user=current_user,
-                songList=table_data, playing=playing, mostPlayed=playing,
+                songList=table_data, playing=playing, mostPlayed=most_played,
                 searchItems=searchItems
             )
         else:

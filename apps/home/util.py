@@ -115,7 +115,7 @@ def get_video_from_vault():
     Gets video from the database VideoVault.
     """
     video = VideoVault.query.filter(
-        VideoVault.last_played_on <= (datetime.now() - timedelta(minutes=1))
+        VideoVault.last_played_on <= (datetime.now() - timedelta(minutes=90))
     )
     if video.first() is not None:
         result = video.order_by(VideoVault.play_count).first()
@@ -140,6 +140,23 @@ def update_video_vault_count(vault_id: str, db: SQLAlchemy) -> bool:
         video.play_count += 1
         return db_addition(db, video)
     return False
+
+def get_most_played() -> list:
+    """
+    Gets most played video from the database VideoVault.
+    """
+    video = VideoVault.query.order_by(VideoVault.play_count.desc()).first()
+    if video:
+        return [{
+            "vault_id": video.id,
+            "video_id": video.video_id,
+            "name": video.name,
+            "thumbnail": video.thumbnail,
+            "duration": video.duration,
+            "added_by": Users.query.filter_by(id=video.added_by).first().username
+        }]
+    else:
+        return [None]
 
 # Working on Initial Entry Table
 def get_initial_entry(get_one: bool = False) -> list:

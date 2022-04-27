@@ -7,19 +7,24 @@
 
 {% block content %}
     <div class="container-fluid py-4">
-      <div class="row gx-2" >
-          <form action="/index" method="post">
-            <div class="col-11">
-              <input type="text" name="search-box" class="form-control rounded" placeholder="Search"
-                     aria-label="Search" aria-describedby="search-addon" />
+        <form action="/index" method="post">
+          <div class="row gx-2" >
+                <div class="col-11">
+                  <input type="search" name="search-box" class="form-control rounded" placeholder="Search"
+                         aria-label="Search" aria-describedby="search-addon" />
+                </div>
+                <div class="col-1">
+                <button type="submit" class="btn btn-primary border-2 rounded flex-column">
+                <i class="fas fa-search"></i>
+              </button>
             </div>
-            <div class="col-1">
-          <button type="submit" class="btn btn-primary border-2 rounded flex-column">
-            <i class="fas fa-search"></i>
-          </button>
+         </div>
+        </form>
+    {% if message %}
+        <div class="alert alert-error" role="alert">
+            {{ message }}
         </div>
-          </form>
-      </div>
+    {% endif %}
     {% if searchItems %}
       <div class="row mb-4"> <!--condition placed in this div if search -->
         <div class="col-12">
@@ -35,7 +40,7 @@
                                    class="img-fluid" style="height: 100px;width: auto">
                             </div>
                             <div class="col-9 px-0">
-                                <h5 class="text-black-50 font-weight-bolder mb-0">{{ each.name }}</h5>
+                                <h6 class="text-black-50 mb-0">{{ each.name }}</h6>
                                 <p class="m-0"> {{ each.duration }} </p>
                             </div>
                   </div>
@@ -47,6 +52,7 @@
       </div>
       </div>
     {% endif %}
+
       <div class="row mt-4 h-75">
         <div class="col-lg-7 mb-lg-0 mb-7">
           <div class="card h-100 p-2">
@@ -65,7 +71,7 @@
                             </a>
                           </div>
                           <div class="px-2" style="color: white;">
-                            <h5 class="media-heading" >{{ each.name }}</h5>
+                            <h6 class="" >{{ each.name }}</h6>
                             <p class="m-0 p-0"> {{ each.duration }}</p>
                             <p class="m-0 p-0"> {{ each.added_by }}</p>
                           </div>
@@ -73,7 +79,7 @@
                     </div>
                     {% endfor %}
                 {% else %}
-                    <div> Add Songs !</div>
+                    <div class="text-bolder text-lg-center"> Add Songs !</div>
                 {% endif %}
                 </div>
               </div>
@@ -94,8 +100,8 @@
                 </div>
                 <div class="col-lg-8" >
                   <div class="d-flex flex-column h-100">
-                    <p class="mb-1 pt-1 text-bold">Currently Playing</p>
-                    <h5 class="font-weight-bolder">{{ playing[0].name }}</h5>
+                    <p class="mb-1 pt-1 text-bolder">Currently Playing</p>
+                    <h6 class="font-weight-bold">{{ playing[0].name }}</h6>
                     <p class="m-0">Duration : {{ playing[0].duration }}</p>
                     <p class="m-0"> Added by: {{ playing[0].added_by }}</p>
                   </div>
@@ -107,20 +113,20 @@
           <div class="card mt-1" style="height: 200px">
             <div class="card-body p-4">
               <div class="row d-flex">
-              {% if mostPlayed %}
+              {% if mostPlayed[0] %}
                 <div class="col-lg-4 mt-2 mt-lg-0">
                     <div class="position-relative d-flex align-items-center justify-content-center">
                       <img class="w-100 position-relative z-index-2 pt-1"
-                           src="https://i.ytimg.com/vi/cNBmzxE6Jf0/hqdefault.jpg"
+                           src="{{ mostPlayed[0].thumbnail }}"
                            alt="rocket">
                   </div>
                 </div>
                 <div class="col-lg-8" >
                   <div class="d-flex flex-column h-100">
-                    <p class="mb-1 text-bold">Most Played</p>
-                    <h5 class="font-weight-bolder">Name of the Song</h5>
-                    <p class="mt-1">Duration : 02:56:55</p>
-                    <p class="m-0"> Added by: Hari Prasad</p>
+                    <p class="mb-1 text-bolder">Most Played</p>
+                    <h6 class="font-weight-bold">{{ mostPlayed[0].name }}</h6>
+                    <p class="m-0">Duration : {{ mostPlayed[0].duration }}</p>
+                    <p class="m-0"> Added by: {{ mostPlayed[0].added_by }}</p>
                   </div>
                 </div>
               {% endif %}

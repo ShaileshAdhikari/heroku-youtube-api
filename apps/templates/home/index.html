@@ -40,7 +40,7 @@
                                    class="img-fluid" style="height: 100px;width: auto">
                             </div>
                             <div class="col-9 px-0">
-                                <h6 class="text-black-50 mb-0">{{ each.name }}</h6>
+                                <h6 class="text-black-50 mb-0">{{ each.name[0:60] }}</h6>
                                 <p class="m-0"> {{ each.duration }} </p>
                             </div>
                   </div>
@@ -71,9 +71,9 @@
                             </a>
                           </div>
                           <div class="px-2" style="color: white;">
-                            <h6 class="" >{{ each.name }}</h6>
+                            <h6 style="line-height: 1.25rem;" >{{ each.name[0:60] }}</h6>
                             <p class="m-0 p-0"> {{ each.duration }}</p>
-                            <p class="m-0 p-0"> {{ each.added_by }}</p>
+                            <p class="m-0 p-0"> Added By: {{ each.added_by }}</p>
                           </div>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
                 <div class="col-lg-8" >
                   <div class="d-flex flex-column h-100">
                     <p class="mb-1 pt-1 text-bolder">Currently Playing</p>
-                    <h6 class="font-weight-bold">{{ playing[0].name }}</h6>
+                    <h6 class="font-weight-bold">{{ playing[0].name[0:60] }}</h6>
                     <p class="m-0">Duration : {{ playing[0].duration }}</p>
                     <p class="m-0"> Added by: {{ playing[0].added_by }}</p>
                   </div>
@@ -124,7 +124,7 @@
                 <div class="col-lg-8" >
                   <div class="d-flex flex-column h-100">
                     <p class="mb-1 text-bolder">Most Played</p>
-                    <h6 class="font-weight-bold">{{ mostPlayed[0].name }}</h6>
+                    <h6 class="font-weight-bold">{{ mostPlayed[0].name[0:60] }}</h6>
                     <p class="m-0">Duration : {{ mostPlayed[0].duration }}</p>
                     <p class="m-0"> Added by: {{ mostPlayed[0].added_by }}</p>
                   </div>

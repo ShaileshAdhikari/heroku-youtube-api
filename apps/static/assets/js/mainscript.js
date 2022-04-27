@@ -96,3 +96,16 @@ function postData(video) {
             }
         });
 }
+
+function DeleteCurrent() {
+    $.get("/remove-get", function (res, status){
+    console.log(res)
+        if (res.length > 15){
+            $( "h1#remarks-h1" ).html( "Remarks: " + res );
+            player.playVideo()
+        }else {
+            $( "h1#remarks-h1" ).html( "Remarks: SUCCESSFUL" );
+            player.loadVideoById(res)
+        }
+    })
+}

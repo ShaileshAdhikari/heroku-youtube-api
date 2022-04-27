@@ -145,6 +145,23 @@ def playlist():
             return False
 
 
+@blueprint.route("/remove-get", methods=['GET'])
+@login_required
+def remove_get():
+    if request.method == 'GET':
+        result = get_playing()[0]['vault_id']
+        try:
+            clean_playings(db)
+        except Exception as e:
+            print("Issue with Truncate !")
+        if db_deletion(db,
+                       VideoVault.query.where(VideoVault.id == result).first(),
+                       ):
+            app.logger.info(f"Removed video by {current_user.email}")
+
+            return on_player_end()
+
+
 @blueprint.route('/<template>')
 @login_required
 def route_template(template):

@@ -18,7 +18,7 @@ class Config(object):
 
     # # This will create a file in <app> FOLDER
     # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db.sqlite3')
-    # SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # PostgreSQL database
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
@@ -31,10 +31,6 @@ class ProductionConfig(Config):
     SESSION_COOKIE_HTTPONLY = True
     REMEMBER_COOKIE_HTTPONLY = True
     REMEMBER_COOKIE_DURATION = 3600
-
-    # PostgreSQL database
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
-
 
 class DebugConfig(Config):
     DEBUG = True

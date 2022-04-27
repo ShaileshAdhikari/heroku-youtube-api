@@ -9,6 +9,7 @@ from flask_login import (
     login_user,
     logout_user
 )
+import random
 
 from apps import db, login_manager
 from apps.authentication import blueprint
@@ -28,6 +29,7 @@ def route_default():
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = LoginForm(request.form)
+    bg_image = f"/static/assets/img/curved-images/curved{random.randint(0,10)}.jpg"
     if 'login' in request.form:
 
         # read form data
@@ -46,17 +48,20 @@ def login():
         # Something (user or pass) is not ok
         return render_template('accounts/login.html',
                                msg='Wrong user or password',
-                               form=login_form)
+                               form=login_form,
+                               bgurl=bg_image)
 
     if not current_user.is_authenticated:
         return render_template('accounts/login.html',
-                               form=login_form)
+                               form=login_form,
+                               bgurl=bg_image)
     return redirect(url_for('home_blueprint.index'))
 
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     create_account_form = CreateAccountForm(request.form)
+    bg_image = f"/static/assets/img/curved-images/curved{random.randint(0,10)}.jpg"
     if 'register' in request.form:
 
         username = request.form['username']
@@ -68,7 +73,8 @@ def register():
             return render_template('accounts/register.html',
                                    msg='Username already registered',
                                    success=False,
-                                   form=create_account_form)
+                                   form=create_account_form,
+                                   bgurl=bg_image)
 
         # Check email exists
         user = Users.query.filter_by(email=email).first()
@@ -76,7 +82,8 @@ def register():
             return render_template('accounts/register.html',
                                    msg='Email already registered',
                                    success=False,
-                                   form=create_account_form)
+                                   form=create_account_form,
+                                   bgurl=bg_image)
 
         # else we can create the user
         user = Users(**request.form)
@@ -86,7 +93,7 @@ def register():
         return redirect(url_for('authentication_blueprint.login'))
 
     else:
-        return render_template('accounts/register.html', form=create_account_form)
+        return render_template('accounts/register.html', form=create_account_form,bgurl=bg_image)
 
 
 @blueprint.route('/logout')

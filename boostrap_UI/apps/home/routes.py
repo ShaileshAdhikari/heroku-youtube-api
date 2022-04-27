@@ -29,14 +29,21 @@ def index():
         )
     if request.method == 'POST':
         search_string = request.form['search-box']
-        isURL = return_vid(search_string)
-        searchItems = get_search_results(search_string) if isURL == 'InvalidURL' else get_video_name(isURL)
+        if len(search_string) > 4:
+            isURL = return_vid(search_string)
+            searchItems = get_search_results(search_string) if isURL == 'InvalidURL' else get_video_name(isURL)
 
-        return render_template(
-            'home/index.html', segment='search', user=current_user,
-            songList=table_data, playing=playing, mostPlayed=playing,
-            searchItems=searchItems
-        )
+            return render_template(
+                'home/index.html', segment='search', user=current_user,
+                songList=table_data, playing=playing, mostPlayed=playing,
+                searchItems=searchItems
+            )
+        else:
+            return render_template(
+                'home/index.html', segment='index', user=current_user,
+                songList=table_data, playing=playing, mostPlayed=[],
+                message="Please enter at least 5 characters"
+            )
 
 
 @blueprint.route('/frame')

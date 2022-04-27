@@ -10,6 +10,7 @@ from flask_login import (
     logout_user
 )
 import random
+from datetime import datetime
 
 from apps import db, login_manager
 from apps.authentication import blueprint
@@ -43,6 +44,11 @@ def login():
         if user and verify_pass(password, user.password):
 
             login_user(user)
+            user = Users.query.filter_by(email=username).first()
+            user.last_login = datetime.now()
+            db.session.add(user)
+            db.session.commit()
+
             return redirect(url_for('authentication_blueprint.route_default'))
 
         # Something (user or pass) is not ok

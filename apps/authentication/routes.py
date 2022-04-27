@@ -73,6 +73,11 @@ def register():
         username = request.form['username']
         email = request.form['email']
 
+        if not email.endswith('@rasello.com'):
+            return render_template('accounts/register.html',
+                                   msg='You must register with @rasello.com',
+                                   form=create_account_form,
+                                   bgurl=bg_image)
         # Check usename exists
         user = Users.query.filter_by(username=username).first()
         if user:

@@ -7,13 +7,11 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from importlib import import_module
-from turbo_flask import Turbo
 import os,logging
 
 
 db = SQLAlchemy()
 login_manager = LoginManager()
-turbo = Turbo()
 
 
 def register_extensions(app):
@@ -63,6 +61,5 @@ def create_app(config):
     register_extensions(app)
     register_blueprints(app)
     configure_database(app)
-    turbo.init_app(app)
 
     return app

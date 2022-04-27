@@ -1,12 +1,14 @@
-FROM python:3.7-alphine
+FROM python:3.9
 
-EXPOSE 5000/tcp
-
-WORKDIR /yt_app
-COPY requirements.txt ./
-RUN pip install --np-cache-dir -r requirements.txt
 COPY . .
 
-RUN rm -r .env
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-CMD ['python', './wsgi.py']
+# install python dependencies
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+# gunicorn
+CMD ["gunicorn", "--config", "gunicorn-cfg.py", "run:app"]

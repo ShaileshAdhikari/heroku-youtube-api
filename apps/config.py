@@ -11,7 +11,7 @@ load_dotenv()
 
 class Config(object):
 
-    basedir = os.path.abspath(os.path.dirname(__file__))
+    # basedir = os.path.abspath(os.path.dirname(__file__))
 
     # Set up the App SECRET_KEY
     SECRET_KEY = os.getenv('SECRET_KEY')

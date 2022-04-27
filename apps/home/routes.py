@@ -6,7 +6,7 @@ from apps.home import blueprint
 from flask import render_template, request, jsonify, current_app as app
 from flask_login import login_required, current_user
 from jinja2 import TemplateNotFound
-from apps import db, turbo
+from apps import db
 
 from .models import VideoVault, InitialEntry, CurrentlyPlaying
 from .util import (

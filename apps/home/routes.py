@@ -34,7 +34,7 @@ def index():
         search_string = request.form['search-box']
         if len(search_string) > 4:
             isURL = return_vid(search_string)
-            searchItems = get_search_results(search_string) if isURL == 'InvalidURL' else get_video_name(isURL)
+            searchItems = get_search_results(search_string) if isURL == 'InvalidURL' else get_video_name(isURL,db)
 
             return render_template(
                 'home/index.html', segment='search', user=current_user,

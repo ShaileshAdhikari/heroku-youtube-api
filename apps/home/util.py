@@ -237,8 +237,16 @@ def get_search_results(query: str) -> list:
         return [{"SEARCH ERROR": e}]
 
 
-def get_video_name(vid: str) -> list:
+def get_video_name(vid: str,db: SQLAlchemy) -> list:
     """ Gets video name from YouTube. """
+    exist = db.session.query(VideoVault).filter_by(video_id=vid).first()
+    if exist:
+        return [{
+            "id": vid,
+            "name": exist.name,
+            "duration": exist.duration,
+            "thumbnail": exist.thumbnail,
+        }]
     try:
         request = get_api_connection().videos().list(
             part="snippet,contentDetails",

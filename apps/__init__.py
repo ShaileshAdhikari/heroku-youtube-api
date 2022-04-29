@@ -8,10 +8,12 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from importlib import import_module
 import os,logging
-
+from flask_socketio import SocketIO
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+socketio = SocketIO()
+async_mode = None
 
 
 def register_extensions(app):
@@ -61,5 +63,6 @@ def create_app(config):
     register_extensions(app)
     register_blueprints(app)
     configure_database(app)
+    socketio.init_app(app, async_mode=async_mode)
 
-    return app
+    return socketio, app

@@ -24,7 +24,7 @@ try:
 except KeyError:
     exit('Error: Invalid <config_mode>. Expected values [Debug, Production] ')
 
-app = create_app(app_config)
+_socket, app = create_app(app_config)
 Migrate(app, db)
 
 if DEBUG:
@@ -34,4 +34,4 @@ if DEBUG:
 
 if __name__ == "__main__":
     # port = int(os.environ.get('PORT', 5055))
-    app.run(host='localhost', debug=DEBUG, port=5000)
+    _socket.run(app, host='localhost', debug=DEBUG, port=5000)

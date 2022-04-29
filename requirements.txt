@@ -1,6 +1,8 @@
 alembic==1.7.7
 aniso8601==9.0.1
 attrs==21.4.0
+bidict==0.22.0
+cachelib==0.6.0
 cachetools==4.2.4
 certifi==2021.10.8
 charset-normalizer==2.0.10
@@ -13,6 +15,7 @@ Flask-Login==0.5.0
 Flask-Migrate==3.1.0
 flask-restx==0.5.1
 flask-sock==0.5.2
+Flask-SocketIO==5.1.2
 Flask-SQLAlchemy==2.5.1
 Flask-WTF==1.0.0
 google-api-core==2.4.0
@@ -41,13 +44,15 @@ pyparsing==3.0.6
 pyrsistent==0.18.1
 python-decouple==3.5
 python-dotenv==0.19.2
+python-engineio==4.3.2
+python-socketio==5.6.0
 pytz==2022.1
 requests==2.27.1
 rsa==4.8
 simple-websocket==0.5.2
 six==1.16.0
 SQLAlchemy==1.4.29
-typing-extensions==4.0.1
+typing_extensions==4.0.1
 uritemplate==4.1.1
 urllib3==1.26.8
 Werkzeug==2.0.2

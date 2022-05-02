@@ -6,7 +6,7 @@ from apps.home import blueprint
 from flask import render_template, request, jsonify, current_app as app
 from flask_login import login_required, current_user
 from jinja2 import TemplateNotFound
-from apps import db
+from apps import db, socketio
 from apps.decorators import check_for_admin
 from .models import VideoVault, InitialEntry, CurrentlyPlaying
 from .util import (
@@ -19,16 +19,10 @@ from .util import (
 @blueprint.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    table_data = get_initial_entry()
-    play_dict = get_playing()[0]
-    playing = [play_dict if play_dict is not None else []]
-    _most = get_most_played()[0]
-    most_played = [_most if _most is not None else []]
 
     if request.method == 'GET':
         return render_template(
             'home/index.html', segment='index', user=current_user,
-            songList=table_data, playing=playing, mostPlayed=most_played
         )
     if request.method == 'POST':
         search_string = request.form['search-box']
@@ -38,16 +32,31 @@ def index():
 
             return render_template(
                 'home/index.html', segment='search', user=current_user,
-                songList=table_data, playing=playing, mostPlayed=most_played,
                 searchItems=searchItems
             )
         else:
             return render_template(
                 'home/index.html', segment='index', user=current_user,
-                songList=table_data, playing=playing, mostPlayed=most_played,
                 message="Please enter at least 5 characters"
             )
 
+@blueprint.route("/get-song-list", methods=['GET'])
+@login_required
+def get_song_list():
+    table_data = get_initial_entry()
+    play_dict = get_playing()[0]
+    playing = [play_dict if play_dict is not None else []]
+    _most = get_most_played()[0]
+    most_played = [_most if _most is not None else []]
+
+    return jsonify({
+        'success': True,
+        'result': {
+            'songList': table_data,
+            'playing': playing,
+            'mostPlayed': most_played
+        }
+    })
 
 @blueprint.route('/frame')
 @login_required
@@ -143,10 +152,16 @@ def playlist():
         )
         if result['video_id'] and insert_to_initial_entry(result['video_id'], db):
             app.logger.info(f"Added new video by {current_user.email}")
-            return True
+            return jsonify({
+                'success': True,
+                'result': "Added Successfully",
+            })
         else:
             app.logger.error(f"Error adding video by {current_user.email}")
-            return False
+            return jsonify({
+                'success': False,
+                'result': {'error': 'Error on adding video !'},
+            })
 
 
 @blueprint.route("/remove-get", methods=['GET'])
@@ -165,6 +180,20 @@ def remove_get():
 
             return on_player_end()
 
+
+@socketio.on('disconnect', namespace='/console')
+def disconnect():
+    # table_data = get_initial_entry()
+    # play_dict = get_playing()[0]
+    # playing = [play_dict if play_dict is not None else []]
+    # _most = get_most_played()[0]
+    # most_played = [_most if _most is not None else []]
+    #
+    # return render_template(
+    #     'home/index.html', segment='index', user=current_user,
+    #     songList=table_data, playing=playing, mostPlayed=most_played,
+    # )
+    return ("Called Disconnect !")
 
 @blueprint.route('/<template>')
 @login_required

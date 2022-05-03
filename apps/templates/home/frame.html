@@ -7,26 +7,37 @@
 
 {% block content %}
     <div style="display: flex;width: 50%">
-        <button id="volume-down" onclick="VolumeDown()">Volume Down</button>
+        <button id="volume-down" onclick="VolumeDown()">Down</button>
         <meter id="volume-meter" min="0" low="10" value="50" high="90" max="100"></meter>
-        <button id="volume-up" onclick="VolumeUp()">Volume Up</button>
+        <button id="volume-up" onclick="VolumeUp()">Up</button>
+    </div>
+    <div class="player-container">
+        <div>
+            <h3 id="remarks-h1"> Remarks: {{ remarks }}</h3>
+            <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+            <div id = 'existing-iframe' style="border: solid 4px #37474F; margin-bottom: 20px;"></div>
+            <div>
+                <button id="delete" onclick="DeleteCurrent()">Delete Current Song</button>
+            </div>
+        </div>
+        <div style="padding-left: 20px">
+            songList
+        </div>
     </div>
 
-    <h1 id="remarks-h1"> Remarks: {{ remarks }}</h1>
-    <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
-    <div id = 'existing-iframe'
-         style="border: solid 4px #37474F">
-    </div>
-    <br>
-    <button id="delete" onclick="DeleteCurrent()">Delete Current Song</button>
+<style>
+#volume-meter {
+  margin: 0 auto;
+  width: 500px;
+  height: 25px;
+  display: block;
+}
 
-    <style>
-        #volume-meter {
-          margin: 0 auto;
-          width: 500px;
-          height: 25px;
-          display: block;
-        }
+.player-container{
+    padding-top: 20px;
+    display: flex;
+    justify-content: normal;
+}
 </style>
 {% endblock %}
 

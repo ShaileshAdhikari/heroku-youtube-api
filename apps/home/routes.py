@@ -70,7 +70,7 @@ def youtube_frame():
 @check_for_admin
 def get_vault_list():
     if request.method == 'GET':
-        vault_list = get_all_from_video_vault(db)
+        vault_list = get_all_from_video_vault()
         return jsonify({
             'success': True,
             'result': {

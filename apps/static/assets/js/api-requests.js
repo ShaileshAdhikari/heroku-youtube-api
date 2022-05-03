@@ -17,7 +17,7 @@ function get_data() {
                         '<div style="height: 100px">' +
                         '<a href="#"> <img class="media-object h-100" src='+song_list[i].thumbnail+' alt="..."> </a>' +
                         '</div><div class="px-2" style="color: white;">' +
-                        '<h6 style="line-height: 1.25rem;" >'+ song_list[i].name +'</h6>' +
+                        '<h6 style="line-height: 1.25rem;" >'+ song_list[i].name.slice(0,50) +'</h6>' +
                         '<p class="m-0 p-0"> '+ song_list[i].duration +'</p>' +
                         '<p class="m-0 p-0"> Added By: '+ song_list[i].added_by +'</p>' +
                         '</div></div>'
@@ -34,7 +34,7 @@ function get_data() {
                         '</div></div><div class="col-lg-8" >'+
                         '<div class="d-flex flex-column h-100">'+
                         '<p class="mb-1 pt-1 text-bolder">Currently Playing</p>'+
-                        '<h6 class="font-weight-bold">'+ playing[0].name +'</h6>'+
+                        '<h6 class="font-weight-bold">'+ playing[0].name.slice(0,50) +'</h6>'+
                         '<p class="m-0">Duration : '+ playing[0].duration +'</p>'+
                         '<p class="m-0"> Added by: '+ playing[0].added_by +'</p>'+
                         '</div></div>'
@@ -50,7 +50,7 @@ function get_data() {
                         '</div></div><div class="col-lg-8" >'+
                         '<div class="d-flex flex-column h-100">'+
                         '<p class="mb-1 pt-1 text-bolder">Most Played</p>'+
-                        '<h6 class="font-weight-bold">'+ most_played[0].name +'</h6>'+
+                        '<h6 class="font-weight-bold">'+ most_played[0].name.slice(0,50) +'</h6>'+
                         '<p class="m-0">Duration : '+ most_played[0].duration +'</p>'+
                         '<p class="m-0"> Added by: '+ most_played[0].added_by +'</p>'+
                         '</div></div>'

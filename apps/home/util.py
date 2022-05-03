@@ -158,6 +158,23 @@ def get_most_played() -> list:
     else:
         return [None]
 
+def get_all_from_video_vault() -> list:
+    """
+    Gets all videos from the database VideoVault.
+    """
+    video = VideoVault.query.all()
+    if video:
+        return [{
+            "vault_id": video.id,
+            "video_id": video.video_id,
+            "name": video.name,
+            "thumbnail": video.thumbnail,
+            "duration": video.duration,
+            "added_by": Users.query.filter_by(id=video.added_by).first().username
+        } for video in video]
+    else:
+        return [None]
+
 # Working on Initial Entry Table
 def get_initial_entry(get_one: bool = False) -> list:
     """

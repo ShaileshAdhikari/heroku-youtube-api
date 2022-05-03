@@ -12,7 +12,8 @@ from .models import VideoVault, InitialEntry, CurrentlyPlaying
 from .util import (
     get_initial_entry, get_playing, clean_playings, get_video_from_vault,
     db_addition, db_deletion, update_video_vault_count, return_vid, get_search_results,
-    get_video_name,insert_to_video_vault,insert_to_initial_entry,get_most_played
+    get_video_name,insert_to_video_vault,insert_to_initial_entry,get_most_played,
+    get_all_from_video_vault
 )
 
 
@@ -63,6 +64,19 @@ def get_song_list():
 @check_for_admin
 def youtube_frame():
     return render_template('home/frame.html', user=current_user)
+
+@blueprint.route('/vault',method=['GET'])
+@login_required
+@check_for_admin
+def get_vault_list():
+    if request.method == 'GET':
+        vault_list = get_all_from_video_vault(db)
+        return jsonify({
+            'success': True,
+            'result': {
+                'vaultList': vault_list
+            }
+        })
 
 
 @blueprint.route('/end')

@@ -59,17 +59,12 @@ function onPlayerStateChange(event) {
         $.get("/end", function (res, status){
             console.log(res)
             if (res.success) {
-                if (res.result > 15){
-                    $( "h1#remarks-h1" ).html( "Remarks: " + res.result );
-                    player.playVideo()
-                }else {
-                    $( "h1#remarks-h1" ).html( "Remarks: SUCCESSFUL" );
-                    player.loadVideoById(res.result)
-                }
-            }else {
+                $( "h1#remarks-h1" ).html( "Remarks: SUCCESSFUL" );
+                player.loadVideoById(res.result)
+            }
+            else {
                 $( "h1#remarks-h1" ).html( "Remarks: " +res.result.error);
             }
-
         })
     }
 }
@@ -105,12 +100,12 @@ function postData(video) {
 function DeleteCurrent() {
     $.get("/remove-get", function (res, status){
     console.log(res)
-        if (res.length > 15){
-            $( "h1#remarks-h1" ).html( "Remarks: " + res );
-            player.playVideo()
-        }else {
+         if (res.success) {
             $( "h1#remarks-h1" ).html( "Remarks: SUCCESSFUL" );
-            player.loadVideoById(res)
+            player.loadVideoById(res.result)
+         }
+         else {
+            $( "h1#remarks-h1" ).html( "Remarks: " +res.result.error);
         }
     })
 }

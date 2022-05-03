@@ -65,7 +65,7 @@ def get_song_list():
 def youtube_frame():
     return render_template('home/frame.html', user=current_user)
 
-@blueprint.route('/vault',method=['GET'])
+@blueprint.route('/vault',methods=['GET'])
 @login_required
 @check_for_admin
 def get_vault_list():

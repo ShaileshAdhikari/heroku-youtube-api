@@ -12,6 +12,15 @@
 {#            </div>#}
           </div>
           <ul class="navbar-nav  justify-content-end">
+            {% if user.email == 'admin@player.com' %}
+                <li class="nav-item d-flex align-items-center pe-3">
+                    <a href="{{ url_for('home_blueprint.youtube_frame') }}" class="nav-link text-body font-weight-bold px-0">
+                        <i class="fab fa-youtube"></i>
+                        <span class="d-sm-inline d-none">PLAYER</span>
+                    </a>
+                </li>
+              {% endif %}
+
             <li class="nav-item d-flex align-items-center">
               <a href="{{ url_for('authentication_blueprint.logout') }}" class="nav-link text-body font-weight-bold px-0">
                 <i class="fa fa-user me-sm-1"></i>

@@ -11,8 +11,8 @@
         <meter id="volume-meter" min="0" low="10" value="50" high="90" max="100"></meter>
         <button id="volume-up" onclick="VolumeUp()">Up</button>
     </div>
-    <div class="player-container">
-        <div>
+    <div class="row player-container">
+        <div class="col-6">
             <h3 id="remarks-h1"> Remarks: {{ remarks }}</h3>
             <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
             <div id = 'existing-iframe' style="border: solid 4px #37474F; margin-bottom: 20px;"></div>
@@ -20,8 +20,32 @@
                 <button id="delete" onclick="DeleteCurrent()">Delete Current Song</button>
             </div>
         </div>
-        <div style="padding-left: 20px">
-            songList
+        <div class="col-6">
+            <table class="table-bordered max-height-500 overflow-scroll">
+                <thead>
+                  <tr>
+                    <th scope="col" class="small-width text-wrap">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Added By</th>
+                    <th scope="col" class="small-width text-wrap">Count</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for each in vaultList %}
+                  <tr>
+                    <th scope="row" class="small-width text-wrap">{{ each['vault_id'] }}</th>
+                    <td >{{ each['name'] }} </td>
+                    <td >{{ each['added_by'] }}</td>
+                    <td class="small-width text-wrap">{{ each['counts'] }}</td>
+                    <td>
+                        <button type="button" class="btn btn-success" onclick="replay({{ each }})"><i class="fas fa-redo"></i></button>
+                        <button type="button" class="btn btn-danger" onclick="remove({{ each }})"><i class="far fa-trash-alt"></i></button>
+                    </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -37,6 +61,17 @@
     padding-top: 20px;
     display: flex;
     justify-content: normal;
+}
+.row{
+    max-width: 100%;
+    padding: 16px;
+}
+
+tr,th{
+    margin: 0 auto;
+}
+.small-width{
+    max-width: 60px;
 }
 </style>
 {% endblock %}

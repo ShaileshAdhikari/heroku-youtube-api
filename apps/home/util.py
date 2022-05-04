@@ -170,7 +170,8 @@ def get_all_from_video_vault() -> list:
             "name": video.name,
             "thumbnail": video.thumbnail,
             "duration": video.duration,
-            "added_by": Users.query.filter_by(id=video.added_by).first().username
+            "added_by": Users.query.filter_by(id=video.added_by).first().username,
+            "counts":video.play_count
         } for video in video]
     else:
         return [None]

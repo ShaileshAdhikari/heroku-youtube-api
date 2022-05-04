@@ -109,3 +109,13 @@ function DeleteCurrent() {
         }
     })
 }
+
+function replay(detail) {
+    console.log("Replay")
+    console.log(detail)
+}
+
+function remove(detail) {
+    console.log("Replay")
+    console.log(detail)
+}

@@ -20,8 +20,8 @@
                 <button id="delete" onclick="DeleteCurrent()">Delete Current Song</button>
             </div>
         </div>
-        <div class="col-6">
-            <table class="table-bordered max-height-500 overflow-scroll">
+        <div class="col-6 max-height-500 overflow-scroll">
+            <table class="table-bordered ">
                 <thead>
                   <tr>
                     <th scope="col" class="small-width text-wrap">ID</th>
@@ -39,7 +39,7 @@
                     <td >{{ each['added_by'] }}</td>
                     <td class="small-width text-wrap">{{ each['counts'] }}</td>
                     <td>
-                        <button type="button" class="btn btn-success" onclick="replay({{ each }})"><i class="fas fa-redo"></i></button>
+                        <button type="button" class="btn btn-success ql-size-small" onclick="replay({{ each }})"><i class="fas fa-redo"></i></button>
                         <button type="button" class="btn btn-danger" onclick="remove({{ each }})"><i class="far fa-trash-alt"></i></button>
                     </td>
                   </tr>
@@ -69,9 +69,14 @@
 
 tr,th{
     margin: 0 auto;
+    text-align: center;
 }
 .small-width{
     max-width: 60px;
+}
+.btn{
+    margin-bottom: 4px;
+    padding: 8px;
 }
 </style>
 {% endblock %}

@@ -162,7 +162,7 @@ def get_all_from_video_vault() -> list:
     """
     Gets all videos from the database VideoVault.
     """
-    video = VideoVault.query.all()
+    video = VideoVault.query.order_by(VideoVault.id.desc()).all()
     if video:
         return [{
             "vault_id": video.id,

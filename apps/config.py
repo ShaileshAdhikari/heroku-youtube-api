@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 import os
 from dotenv import load_dotenv
-from decouple import config
+from datetime import timedelta
 
 load_dotenv()
 
@@ -31,7 +31,7 @@ class ProductionConfig(Config):
     # Security
     SESSION_COOKIE_HTTPONLY = True
     REMEMBER_COOKIE_HTTPONLY = True
-    REMEMBER_COOKIE_DURATION = 3600
+    REMEMBER_COOKIE_DURATION = timedelta(hours=24)
 
 class DebugConfig(Config):
     DEBUG = True

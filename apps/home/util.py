@@ -64,6 +64,12 @@ def db_deletion(db: SQLAlchemy, dataObject):
         db.session.commit()
         return True
 
+# User Operation
+def get_user_by_username(username: str, db: SQLAlchemy) -> Users:
+    """
+    Returns user by username.
+    """
+    return db.session.query(Users).filter_by(username=username).first()
 
 # Working on Video Vault Table
 def insert_to_video_vault(

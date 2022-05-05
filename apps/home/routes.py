@@ -13,7 +13,7 @@ from .util import (
     get_initial_entry, get_playing, clean_playings, get_video_from_vault,
     db_addition, db_deletion, update_video_vault_count, return_vid, get_search_results,
     get_video_name,insert_to_video_vault,insert_to_initial_entry,get_most_played,
-    get_all_from_video_vault
+    get_all_from_video_vault,get_user_by_username
 )
 
 
@@ -63,9 +63,9 @@ def get_song_list():
 @login_required
 @check_for_admin
 def youtube_frame():
-    return render_template('home/frame.html', user=current_user, vaultList = get_all_from_video_vault())
+    return render_template('home/frame.html', user=current_user)
 
-@blueprint.route('/vault',methods=['GET'])
+@blueprint.route('/get-vault',methods=['GET'])
 @login_required
 @check_for_admin
 def get_vault_list():
@@ -77,6 +77,53 @@ def get_vault_list():
                 'vaultList': vault_list
             }
         })
+
+@blueprint.route('/delete-song',methods=['POST'])
+@login_required
+@check_for_admin
+def delete_vault_song():
+    if request.method == 'POST':
+        data = request.get_json()
+
+        if db_deletion(db,VideoVault.query.where(VideoVault.id == data['vault_id']).first()):
+            app.logger.info(f"Removed video {data['name'][0:50]}by {current_user.email}")
+
+            return jsonify({
+                'success': True,
+                'result': {}
+            })
+        return jsonify({
+            'success': False,
+            'result': {
+                'error': 'Unable to delete video'
+            }
+        })
+
+@blueprint.route('/replay-song',methods=['POST'])
+@login_required
+def replay_vault_song():
+    if request.method == 'POST':
+        data = request.get_json()
+        videoID = data['video_id']
+        videoName = data['name']
+        videoThumbnail = data['thumbnail']
+        videoDuration = data['duration']
+        addedBy = get_user_by_username(data['added_by'],db).id
+
+        result = insert_to_video_vault(
+            videoID, videoName, videoThumbnail,
+            videoDuration, addedBy, db
+        )
+        if result['video_id'] and insert_to_initial_entry(result['video_id'], db):
+            return jsonify({
+                'success': True,
+                'result': "Added Successfully",
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'result': {'error': 'Error on adding video !'},
+            })
 
 
 @blueprint.route('/end')
@@ -180,6 +227,7 @@ def playlist():
 
 @blueprint.route("/remove-get", methods=['GET'])
 @login_required
+@check_for_admin
 def remove_get():
     if request.method == 'GET':
         result = get_playing()[0]['vault_id']

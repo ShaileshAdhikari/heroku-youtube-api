@@ -27,8 +27,8 @@ function onYouTubeIframeAPIReady() {
 function onPlayerReady(event) {
     document.getElementById('existing-iframe').style.borderColor = '#FF6D00';
     console.log('Player Started',player)
+    get_vault_list();
 }
-
 
 function changeBorderColor(playerStatus) {
     var color;
@@ -111,11 +111,45 @@ function DeleteCurrent() {
 }
 
 function replay(detail) {
-    console.log("Replay")
-    console.log(detail)
+    $.ajax({
+            type: "POST",
+            url: "/replay-song",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(detail),
+            success: function(some) {
+                if(some.success){
+                    document.getElementById('message').innerHTML = "Successfully added to the playlist";
+                }else {
+                    document.getElementById('message').innerHTML = "Issue on Adding Song";
+                }
+            },
+            error: function(err) {
+                console.log("ERROR");
+                document.getElementById('message').innerHTML = "Issue on Adding Song";
+            },
+        });
+
 }
 
 function remove(detail) {
-    console.log("Replay")
-    console.log(detail)
+    $.ajax({
+            type: "POST",
+            url: "/delete-song",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(detail),
+            success: function(some) {
+                if(some.success){
+                    get_vault_list();
+                    document.getElementById('message').innerHTML = "Successfully Deleted";
+                }else {
+                    document.getElementById('message').innerHTML = "Song is still on Playlist";
+                }
+            },
+            error: function(err) {
+                console.log("ERROR");
+                document.getElementById('message').innerHTML = "Song is still on Playlist";
+            },
+        });
 }

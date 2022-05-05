@@ -65,3 +65,28 @@ function get_data() {
             document.getElementById('mostplayedId').innerHTML = most_played_html;
         });
 }
+
+function get_vault_list() {
+    let base_url = window.location.origin;
+    $.getJSON(base_url + '/get-vault', function (data) {
+        console.log(data);
+        var song_table_html = '';
+        var i = 0;
+        if (data.success){
+            song_list = data.result.vaultList
+            for (i = 0; i < song_list.length; i++) {
+                song_table_html += '<tr>'+
+                    '<th scope="row" class="small-width text-wrap">'+song_list[i].vault_id+'</th>'+
+                    '<td >'+song_list[i].name+'</td>'+
+                    '<td >'+song_list[i].added_by+'</td>'+
+                    '<td class="small-width text-wrap">'+song_list[i].counts+'</td>'+
+                    '<td><button type="button" class="btn btn-success ql-size-small" onclick="replay(song_list['+i+'])">' +
+                    '<i class="fas fa-redo"></i></button>'+
+                    '<button type="button" class="btn btn-danger" onclick="remove(song_list['+i+'])">' +
+                    '<i class="far fa-trash-alt"></i></button>'+
+                    '</td></tr>'
+            }
+        }
+            document.getElementById('tableId').innerHTML = song_table_html;
+        });
+}

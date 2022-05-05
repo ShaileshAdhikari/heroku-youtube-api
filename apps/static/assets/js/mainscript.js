@@ -66,6 +66,7 @@ function onPlayerStateChange(event) {
                 $( "h1#remarks-h1" ).html( "Remarks: " +res.result.error);
             }
         })
+        get_vault_list();
     }
 }
 

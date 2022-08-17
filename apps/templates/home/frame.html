@@ -1,0 +1,74 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Home {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div style="display: flex;width: 50%">
+        <button id="volume-down" onclick="VolumeDown()">Down</button>
+        <meter id="volume-meter" min="0" low="10" value="50" high="90" max="100"></meter>
+        <button id="volume-up" onclick="VolumeUp()">Up</button>
+    </div>
+    <div class="row player-container">
+        <div class="col-6">
+            <h3 id="remarks-h1"> Remarks: {{ remarks }}</h3>
+            <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+            <div id = 'existing-iframe' style="border: solid 4px #37474F; margin-bottom: 20px;"></div>
+            <div>
+                <button id="delete" onclick="DeleteCurrent()">Delete Current Song</button>
+            </div>
+        </div>
+        <div class="col-6 ">
+            <h3 id="message"> </h3>
+            <div class="max-height-500 overflow-scroll">
+                <table class="table-bordered ">
+                <thead>
+                  <tr>
+                    <th scope="col" class="small-width text-wrap">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Added By</th>
+                    <th scope="col" class="small-width text-wrap">Count</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tableId">
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+
+<style>
+#volume-meter {
+  margin: 0 auto;
+  width: 500px;
+  height: 25px;
+  display: block;
+}
+
+.player-container{
+    padding-top: 20px;
+    display: flex;
+    justify-content: normal;
+}
+.row{
+    max-width: 100%;
+    padding: 16px;
+}
+
+tr,th{
+    margin: 0 auto;
+    text-align: center;
+}
+.small-width{
+    max-width: 60px;
+}
+.btn{
+    margin-bottom: 4px;
+    padding: 8px;
+}
+</style>
+{% endblock %}
+

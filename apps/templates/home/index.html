@@ -1,0 +1,105 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Home {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid py-4">
+        <form action="/index" method="post">
+          <div class="row gx-2" >
+                <div class="col-11">
+                  <input type="search" name="search-box" class="form-control rounded" placeholder="Search"
+                         aria-label="Search" aria-describedby="search-addon" />
+                </div>
+                <div class="col-1">
+                <button type="submit" class="btn btn-primary border-2 rounded flex-column">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+         </div>
+        </form>
+    {% if message %}
+        <div class="alert alert-error" role="alert">
+            {{ message }}
+        </div>
+    {% endif %}
+    {% if searchItems %}
+      <div class="row mb-4"> <!--condition placed in this div if search -->
+        <div class="col-12">
+            <div class="card b">
+                <div class="row row-cols-2 p-3">
+
+                    {% for each in searchItems %}
+                  <div class="col p-1"> <!-- loop this div for searching-->
+                      <a class="clickable" onclick="postData({{ each }})">
+                    <div class="row">
+                            <div class="col-3">
+                              <img src="{{ each.thumbnail }}"
+                                   class="img-fluid" style="height: 100px;width: auto">
+                            </div>
+                            <div class="col-9 px-0">
+                                <h6 class="text-black-50 mb-0">{{ each.name[0:60] }}</h6>
+                                <p class="m-0"> {{ each.duration }} </p>
+                            </div>
+                  </div>
+                      </a>
+                </div>
+                    {% endfor %}
+            </div>
+        </div>
+      </div>
+      </div>
+    {% endif %}
+
+      <div class="row mt-4 h-75">
+        <div class="col-lg-7 mb-lg-0 mb-7">
+          <div class="card h-100 p-2">
+            <div class="overflow-scroll position-relative border-radius-lg bg-cover"
+                 style="height: 400px;background-color: #efacac">
+              <div class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3">
+                <h5 class="text-white font-weight-bolder mb-4 pt-2">Playlist</h5>
+                <div class="row" id="playlistId"> <!--loop this div for playlist songList-->
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="card mt-1" style="height: 200px" >
+            <div class="card-body p-4">
+              <div class="row d-flex" id="playingId">
+
+              </div>
+            </div>
+          </div>
+          <div class="card mt-1" style="height: 200px">
+            <div class="card-body p-4">
+              <div class="row d-flex" id="mostplayedId">
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include "includes/footer.html" %}
+
+    </div>
+    <style>
+        .clickable {
+            cursor: pointer;
+            text-decoration: none;
+        }
+    </style>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+<script type="application/javascript">
+get_data();
+</script>
+{% endblock javascripts %}

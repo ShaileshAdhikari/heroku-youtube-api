@@ -1,0 +1,156 @@
+// 2. This code loads the IFrame Player API code asynchronously.
+var tag = document.createElement('script');
+tag.id = 'iframe'
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+// 3. This function creates an <iframe> (and YouTube player)
+var player;
+
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('existing-iframe', {
+        height: '315',
+        width: '560',
+        videoId:'icPHcK_cCF4',
+        playerVars: {
+            autoplay: 1,
+        },
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    });
+}
+
+// 4. The API will call this function when the video player is ready.
+function onPlayerReady(event) {
+    document.getElementById('existing-iframe').style.borderColor = '#FF6D00';
+    console.log('Player Started',player)
+    get_vault_list();
+}
+
+function changeBorderColor(playerStatus) {
+    var color;
+    if (playerStatus == -1) {
+        color = "#37474F"; // unstarted = gray
+    } else if (playerStatus == 0) {
+        color = "#FFFF00"; // ended = yellow
+    } else if (playerStatus == 1) {
+        color = "#33691E"; // playing = green
+    } else if (playerStatus == 2) {
+        color = "#DD2C00"; // paused = red
+    } else if (playerStatus == 3) {
+        color = "#AA00FF"; // buffering = purple
+    } else if (playerStatus == 5) {
+        color = "#FF6DOO"; // video cued = orange
+    }
+    if (color) {
+        document.getElementById('existing-iframe').style.borderColor = color;
+    }
+}
+
+// 5. The API calls this function when the player's state changes.
+function onPlayerStateChange(event) {
+    console.log("state Changed", event)
+    changeBorderColor(event.data);
+    if (event.data == YT.PlayerState.ENDED) {
+        console.log("PLAYER ENDED")
+        $.get("/end", function (res, status){
+            console.log(res)
+            if (res.success) {
+                $( "h1#remarks-h1" ).html( "Remarks: SUCCESSFUL" );
+                player.loadVideoById(res.result)
+            }
+            else {
+                $( "h1#remarks-h1" ).html( "Remarks: " +res.result.error);
+            }
+        })
+        get_vault_list();
+    }
+}
+
+// Volume Control
+function VolumeUp() {
+    player.setVolume(player.getVolume() + 5);
+    document.getElementById('volume-meter').value = player.getVolume();
+}
+
+function VolumeDown() {
+    player.setVolume(player.getVolume() - 5);
+    document.getElementById('volume-meter').value = player.getVolume();
+}
+
+function postData(video) {
+    console.log(video)
+    $.ajax({
+            type: "POST",
+            url: "/playlist",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify({
+                video
+            }),
+            complete: function() {
+                console.log("COMPLETED");
+                window.location.href = "/index";
+            }
+        });
+}
+
+function DeleteCurrent() {
+    $.get("/remove-get", function (res, status){
+    console.log(res)
+         if (res.success) {
+            $( "h1#remarks-h1" ).html( "Remarks: SUCCESSFUL" );
+            player.loadVideoById(res.result)
+         }
+         else {
+            $( "h1#remarks-h1" ).html( "Remarks: " +res.result.error);
+        }
+    })
+}
+
+function replay(detail) {
+    $.ajax({
+            type: "POST",
+            url: "/replay-song",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(detail),
+            success: function(some) {
+                if(some.success){
+                    document.getElementById('message').innerHTML = "Successfully added to the playlist";
+                }else {
+                    document.getElementById('message').innerHTML = "Issue on Adding Song";
+                }
+            },
+            error: function(err) {
+                console.log("ERROR");
+                document.getElementById('message').innerHTML = "Issue on Adding Song";
+            },
+        });
+
+}
+
+function remove(detail) {
+    $.ajax({
+            type: "POST",
+            url: "/delete-song",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(detail),
+            success: function(some) {
+                if(some.success){
+                    get_vault_list();
+                    document.getElementById('message').innerHTML = "Successfully Deleted";
+                }else {
+                    document.getElementById('message').innerHTML = "Song is still on Playlist";
+                }
+            },
+            error: function(err) {
+                console.log("ERROR");
+                document.getElementById('message').innerHTML = "Song is still on Playlist";
+            },
+        });
+}

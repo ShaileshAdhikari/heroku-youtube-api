@@ -73,9 +73,9 @@ def register():
         username = request.form['username']
         email = request.form['email']
 
-        if not email.endswith('@rasello.com'):
+        if not email.endswith('@tai.com.np'):
             return render_template('accounts/register.html',
-                                   msg='You must register with @rasello.com',
+                                   msg='You must register with @tai.com.np',
                                    form=create_account_form,
                                    bgurl=bg_image)
         # Check usename exists

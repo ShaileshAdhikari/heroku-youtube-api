@@ -10,7 +10,7 @@ function get_data() {
             var song_list_html = '';
             var most_played_html = '';
             var playing_html = '';
-
+            debugger
             if (song_list.length > 0) {
                 for (let i = 0; i < song_list.length; i++) {
                     song_list_html += '<div class="media d-flex">' +
@@ -27,7 +27,6 @@ function get_data() {
                 song_list_html = '<div class="text-bolder text-lg-center"> Add Songs !</div>'
             }
 
-            debugger
             if (playing.length > 0) {
                     playing_html += '<div class="col-lg-4 mt-2 mt-lg-0">'+
                         '<div class="position-relative d-flex align-items-center justify-content-center">'+
@@ -44,7 +43,6 @@ function get_data() {
                 playing_html = '<div class="text-bolder text-lg-center"> No Songs Playing !</div>'
             }
 
-            debugger
             if (most_played.length > 0) {
                     most_played_html += '<div class="col-lg-4 mt-2 mt-lg-0">'+
                         '<div class="position-relative d-flex align-items-center justify-content-center">'+
@@ -62,7 +60,6 @@ function get_data() {
             }
 
         }
-        debugger
             document.getElementById('playlistId').innerHTML = song_list_html;
             document.getElementById('playingId').innerHTML = playing_html;
             document.getElementById('mostplayedId').innerHTML = most_played_html;

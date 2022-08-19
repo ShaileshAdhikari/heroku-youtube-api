@@ -46,9 +46,9 @@ def index():
 def get_song_list():
     table_data = get_initial_entry()
     play_dict = get_playing()[0]
-    playing = play_dict if play_dict is not None else []
+    playing = [play_dict] if play_dict is not None else []
     _most = get_most_played()[0]
-    most_played = _most if _most is not None else []
+    most_played = [_most] if _most is not None else []
 
     return jsonify({
         'success': True,
